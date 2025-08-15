@@ -8,22 +8,23 @@
       "CE",
       "SE"
     ],
-    "notes": "Platter includes truffle/edamame (dairy), spicy veg (celery)."
+    "notes": "Green: truffle/edamame (milk); Orange: spicy veg (celery); sesame traces."
   },
   {
     "dish": "Steamed Dim Sum Platter",
     "codes": [
       "GL"
     ],
-    "notes": ""
+    "notes": "General gluten from wrappers."
   },
   {
     "dish": "Deep Fried Dim Sum Assortment",
     "codes": [
       "GL",
-      "EG"
+      "EG",
+      "NU"
     ],
-    "notes": "Contains Venison Puff (egg)."
+    "notes": "Venison puff contains egg; pumpkin ball may contain nuts."
   },
   {
     "dish": "Golden Fried Soft Shell Crab with Chilli",
@@ -32,7 +33,7 @@
       "CR",
       "EG"
     ],
-    "notes": "Deep fried soft-shell crab."
+    "notes": "Deep-fried crustacean."
   },
   {
     "dish": "Home-made Salt and Pepper Crispy Tofu (v)",
@@ -40,7 +41,7 @@
       "GL",
       "GA"
     ],
-    "notes": "Seasoned; soy presence varies."
+    "notes": "Ask for nut-free if needed (no sauce)."
   },
   {
     "dish": "Black Truffle Vegetable Spring Roll (v)",
@@ -48,7 +49,7 @@
       "GL",
       "MR"
     ],
-    "notes": "Truffle/mushroom filling."
+    "notes": "Mushroom/truffle filling."
   },
   {
     "dish": "Crispy Aromatic Duck Salad",
@@ -59,7 +60,7 @@
       "ON",
       "GA"
     ],
-    "notes": "Duck sauce and pine nuts in garnish."
+    "notes": "Nuts in garnish; soy/garlic in sauce."
   },
   {
     "dish": "Duck Soup",
@@ -70,7 +71,36 @@
       "SE",
       "ON"
     ],
-    "notes": "Sesame and soy in seasoning."
+    "notes": "Sesame & soy; onions; mushrooms."
+  },
+  {
+    "dish": "Hot and Sour Soup with Seafood",
+    "codes": [
+      "GL",
+      "MU",
+      "CR",
+      "EG",
+      "SO",
+      "ON",
+      "MR"
+    ],
+    "notes": "Egg white; mustard; seafood."
+  },
+  {
+    "dish": "Sweet Corn Soup with Chicken",
+    "codes": [
+      "EG"
+    ],
+    "notes": "Egg white."
+  },
+  {
+    "dish": "Stir Fried Squid with Pepper, Chilli, and Garlic",
+    "codes": [
+      "EG",
+      "ON",
+      "GA"
+    ],
+    "notes": "Egg white; aromatics."
   },
   {
     "dish": "Norwegian King Crab \u2014 Pan-fried with Chilli & Garlic",
@@ -78,7 +108,7 @@
       "CR",
       "GA"
     ],
-    "notes": "Pan-fried with aromatics."
+    "notes": "Crustacean; garlic."
   },
   {
     "dish": "Norwegian King Crab \u2014 Steamed with Rice Wine & Egg White",
@@ -88,7 +118,17 @@
       "GL",
       "ON"
     ],
-    "notes": "Egg white; sometimes scallion."
+    "notes": "Egg white; scallion; check soy (GF option noted)."
+  },
+  {
+    "dish": "Lobster with Ginger and Spring Onion",
+    "codes": [
+      "CR",
+      "ON",
+      "GA",
+      "SE"
+    ],
+    "notes": "Sesame oil used; can ask without."
   },
   {
     "dish": "Braised South African Kippin Abalone in Superior Oyster Sauce",
@@ -98,18 +138,7 @@
       "MR",
       "CR"
     ],
-    "notes": "House list includes under crustaceans."
-  },
-  {
-    "dish": "Legendary Peking Duck (all courses)",
-    "codes": [
-      "GL",
-      "NU",
-      "SO",
-      "ON",
-      "GA"
-    ],
-    "notes": "3rd course may include pine nuts; sauce has garlic."
+    "notes": "Oyster/soy; mushrooms."
   },
   {
     "dish": "Braised Fish Maw with Japanese Shiitake in Superior Oyster Sauce",
@@ -119,7 +148,7 @@
       "MR",
       "Fl"
     ],
-    "notes": "Fish product; mushroom; soy/oyster sauce."
+    "notes": "Fish product; mushrooms; soy/oyster."
   },
   {
     "dish": "Grilled Chilean Sea Bass in Honey",
@@ -129,7 +158,7 @@
       "SE",
       "MR"
     ],
-    "notes": "Often served with tempura mushroom garnish."
+    "notes": "Sesame oil; optional tempura mushroom garnish."
   },
   {
     "dish": "Deep Fried King Scallop with Minced Prawns in Teriyaki Sauce",
@@ -141,7 +170,7 @@
       "EG",
       "ON"
     ],
-    "notes": "Mollusc + crustacean; teriyaki contains soy/sesame."
+    "notes": "Mollusc + crustacean; egg in batter possible."
   },
   {
     "dish": "Kung Pao Prawn with Cashew",
@@ -153,7 +182,19 @@
       "GA",
       "ON"
     ],
-    "notes": "Cashew nuts; soy/garlic; sesame oil."
+    "notes": "Cashew nuts; sesame oil; soy; aromatics."
+  },
+  {
+    "dish": "Legendary Peking Duck (all courses)",
+    "codes": [
+      "GL",
+      "NU",
+      "SO",
+      "ON",
+      "GA",
+      "MR"
+    ],
+    "notes": "3rd course may include pine nuts; sauces have garlic; mushrooms optional in some courses."
   },
   {
     "dish": "Slow Cooked Japanese Wagyu with Black Truffle Sauce",
@@ -165,7 +206,7 @@
       "ON",
       "Mi"
     ],
-    "notes": "Truffle sauce; sesame oil possible."
+    "notes": "Truffle sauce; sesame oil possible; dairy in sauce."
   },
   {
     "dish": "Stir-fry Angus Tenderloin Beef with Black Pepper Sauce",
@@ -185,7 +226,7 @@
       "GL",
       "ON"
     ],
-    "notes": "Mongolian-style sauce contains dairy."
+    "notes": "Mongolian-style sauce; contains dairy."
   },
   {
     "dish": "Sweet and Sour Iberico Pork with Pineapple",
@@ -196,7 +237,7 @@
       "ON",
       "GA"
     ],
-    "notes": "Sesame oil and soy used in sauce."
+    "notes": "Sesame oil & soy in sauce."
   },
   {
     "dish": "Sizzling Taiwanese Three Cups Chicken",
@@ -221,6 +262,30 @@
     "notes": "Soy braise; sesame oil common."
   },
   {
+    "dish": "Salt and Pepper Estonian Quail",
+    "codes": [
+      "EG",
+      "GA",
+      "ON"
+    ],
+    "notes": "Egg white dredge; aromatics."
+  },
+  {
+    "dish": "Honey-glazed Iberico Char Siu",
+    "codes": [
+      "SO",
+      "SU"
+    ],
+    "notes": "Soy-based glaze; sulfites possible."
+  },
+  {
+    "dish": "Crispy Pork Belly",
+    "codes": [
+      "MU"
+    ],
+    "notes": "Mustard on side as per notes; otherwise nut-free & egg-free."
+  },
+  {
     "dish": "Stir Fry Lamian with Angus Beef",
     "codes": [
       "GL",
@@ -230,7 +295,7 @@
       "ON",
       "GA"
     ],
-    "notes": "Egg present; soy & sesame."
+    "notes": "Hand-pulled noodles (gluten); egg; soy & sesame."
   },
   {
     "dish": "Spicy Singapore Noodles with Seafood",
@@ -254,7 +319,7 @@
       "ON",
       "GA"
     ],
-    "notes": "XO contains dried seafood; soy/sesame."
+    "notes": "XO contains dried seafood; sesame oil; soy."
   },
   {
     "dish": "Golden Egg Fried Rice",
@@ -269,46 +334,7 @@
     "notes": "Typically allergen\u2011free; verify cross-contact."
   },
   {
-    "dish": "Hot and Sour Soup with Seafood",
-    "codes": [
-      "GL",
-      "MU",
-      "CR",
-      "EG",
-      "SO",
-      "ON",
-      "MR"
-    ],
-    "notes": "Contains egg white; mustard flagged in kitchen notes."
-  },
-  {
-    "dish": "Sweet Corn Soup with Chicken",
-    "codes": [
-      "EG"
-    ],
-    "notes": "Egg white used for texture."
-  },
-  {
-    "dish": "Lobster with Ginger and Spring Onion",
-    "codes": [
-      "CR",
-      "ON",
-      "GA",
-      "SE"
-    ],
-    "notes": "Sesame oil often used."
-  },
-  {
-    "dish": "Salt and Pepper Estonian Quail",
-    "codes": [
-      "EG",
-      "GA",
-      "ON"
-    ],
-    "notes": "Deep-fried with egg white; aromatics."
-  },
-  {
-    "dish": "Claypot Silken Egg Tofu with Vegetables (v)",
+    "dish": "Claypot Silken Egg Tofu with Vegetables (V)",
     "codes": [
       "SO",
       "MR",
@@ -344,10 +370,37 @@
     "notes": "Oyster/soy based."
   },
   {
-    "dish": "Stir\u2011Fry Asparagus with Lily Bulbs, Water Chestnut & Yellow Fungus (v)",
+    "dish": "Stir\u2011Fry Asparagus with Lily Bulbs, Water Chestnut & Yellow Fungus (V)",
     "codes": [
       "MR"
     ],
-    "notes": "Includes fungus; generally gluten\u2011free."
+    "notes": "Contains fungus; generally gluten\u2011free."
+  },
+  {
+    "dish": "Peach Melba",
+    "codes": [
+      "Mi",
+      "EG"
+    ],
+    "notes": "Dairy and egg in ice cream."
+  },
+  {
+    "dish": "Wasabi Blanch",
+    "codes": [
+      "Mi",
+      "NU",
+      "EG"
+    ],
+    "notes": "Contains almond; egg yolk in ice cream."
+  },
+  {
+    "dish": "Matcha Financier",
+    "codes": [
+      "GL",
+      "EG",
+      "NU",
+      "Mi"
+    ],
+    "notes": "Almond flour; dairy; gluten."
   }
 ]
