@@ -20,10 +20,6 @@
     "name": "Fish"
   },
   {
-    "code": "LU",
-    "name": "Lupin"
-  },
-  {
     "code": "MO",
     "name": "Molluscs"
   },
@@ -52,10 +48,6 @@
     "name": "Soya"
   },
   {
-    "code": "SU",
-    "name": "Sulfites"
-  },
-  {
     "code": "GA",
     "name": "Garlic"
   },
@@ -67,8 +59,4 @@
     "code": "MR",
     "name": "Mushrooms"
   },
-  {
-    "code": "Cl",
-    "name": "Awaiting completion/other"
-  }
 ]
