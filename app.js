@@ -60,7 +60,7 @@ function wireCommon(){
 function wireStickyCompact(){
   const panel = document.getElementById('stickyPanel');
   let lastY = window.scrollY;
-  const downThreshold = 160;   // px scrolled before compacting
+  const downThreshold = 50;   // px scrolled before compacting
   const upThreshold   = 120;   // expand again when above this & scrolling up
   window.addEventListener('scroll', () => {
     const y = window.scrollY;
