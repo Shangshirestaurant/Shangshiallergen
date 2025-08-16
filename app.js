@@ -57,15 +57,17 @@ function wireCommon(){
   });
   document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener('change', e => { state.mode = e.target.value; renderList(); }));
 }
-function wireStickyShrink(){
+function wireStickyCompact(){
   const panel = document.getElementById('stickyPanel');
   let lastY = window.scrollY;
+  const downThreshold = 160;   // px scrolled before compacting
+  const upThreshold   = 120;   // expand again when above this & scrolling up
   window.addEventListener('scroll', () => {
     const y = window.scrollY;
-    if (y > lastY && y > 160) { // scrolling down past threshold
-      panel.classList.add('shrink');
-    } else if (y < lastY || y < 140) { // scrolling up or near top
-      panel.classList.remove('shrink');
+    if (y > lastY && y > downThreshold) {        // scrolling down past threshold
+      panel.classList.add('compact');
+    } else if ((y < lastY && y < downThreshold) || y < upThreshold) { // scrolling up or near top
+      panel.classList.remove('compact');
     }
     lastY = y;
   }, {passive:true});
@@ -75,4 +77,4 @@ async function load(){
   state.allergens=await aRes.json(); state.menu=await mRes.json();
   renderDropdown(); renderFilterPills(); renderList();
 }
-wireMultiSelect(); wireCommon(); wireStickyShrink(); load();
+wireMultiSelect(); wireCommon(); wireStickyCompact(); load();
