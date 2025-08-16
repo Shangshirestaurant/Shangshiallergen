@@ -15,7 +15,7 @@
     "codes": [
       "GL"
     ],
-    "notes": "General gluten from wrappers."
+    "notes": "General gluten from Skin."
   },
   {
     "dish": "Deep Fried Dim Sum Assortment",
@@ -24,7 +24,7 @@
       "EG",
       "NU"
     ],
-    "notes": "Venison puff contains egg; pumpkin ball may contain nuts."
+    "notes": "Venison puff contains egg and butter."
   },
   {
     "dish": "Golden Fried Soft Shell Crab with Chilli",
@@ -33,15 +33,13 @@
       "CR",
       "EG"
     ],
-    "notes": "Deep-fried crustacean."
+    "notes": "Deep-fried."
   },
   {
     "dish": "Home-made Salt and Pepper Crispy Tofu (v)",
     "codes": [
       "GL",
       "GA"
-    ],
-    "notes": "Ask for nut-free if needed (no sauce)."
   },
   {
     "dish": "Black Truffle Vegetable Spring Roll (v)",
@@ -100,7 +98,7 @@
       "ON",
       "GA"
     ],
-    "notes": "Egg white; aromatics."
+    "notes": "Egg white"
   },
   {
     "dish": "Norwegian King Crab \u2014 Pan-fried with Chilli & Garlic",
