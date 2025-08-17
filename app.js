@@ -169,7 +169,7 @@ function wireUI(){
 
 async function load(){
   try{
-    const [a,m] = await Promise.all([fetch('allergens.json'), fetch('menu.json')]);
+    const [a,m] = await Promise.all([fetch('allergens.json?v=20250817m'), fetch('menu.json?v=20250817m')]);
     state.allergens = await a.json(); state.menu = await m.json();
   }catch(e){ /* offline first load will use cache */ }
   renderDropdown(); renderList(); renderIngredients(); wireUI();
@@ -235,67 +235,3 @@ load();
     applyPresetName(btn.getAttribute('data-preset'));
   }, {passive:false});
 })();
-
-
-// ===== Luxury Intro Overlay Logic =====
-document.addEventListener('DOMContentLoaded', function(){
-  var intro = document.getElementById('intro-screen');
-  var enterBtn = document.getElementById('enter-btn');
-  document.body.classList.add('lock-scroll');
-  if(intro && enterBtn){
-    enterBtn.addEventListener('click', function(){
-      intro.classList.add('hide');
-      document.body.classList.remove('lock-scroll');
-      setTimeout(function(){ if(intro && intro.parentNode){ intro.parentNode.removeChild(intro); } }, 820);
-    });
-  }
-});
-
-
-// ===== Intro: show on fresh load/reload, skip only on Back/Forward (robust) =====
-document.addEventListener('DOMContentLoaded', function () {
-  var intro = document.getElementById('intro-screen');
-  var enterBtn = document.getElementById('enter-btn');
-  var appContent = document.getElementById('app-content');
-
-  function showIntro() {
-    if (!intro) { if (appContent) appContent.classList.remove('hidden'); return; }
-    document.body.classList.add('lock-scroll', 'intro-active');
-    if (enterBtn) {
-      enterBtn.addEventListener('click', function () {
-        intro.classList.add('hide');
-        document.body.classList.remove('lock-scroll', 'intro-active');
-        setTimeout(function () {
-          if (intro && intro.parentNode) intro.parentNode.removeChild(intro);
-          if (appContent) appContent.classList.remove('hidden');
-        }, 820);
-      }, { once: true });
-    }
-  }
-
-  function skipIntro() {
-    if (intro && intro.parentNode) try { intro.parentNode.removeChild(intro); } catch (e) {}
-    document.body.classList.remove('lock-scroll', 'intro-active');
-    if (appContent) appContent.classList.remove('hidden');
-  }
-
-  var isBackForward = false;
-  try {
-    if (performance && performance.getEntriesByType) {
-      var navs = performance.getEntriesByType('navigation');
-      if (navs && navs[0] && navs[0].type === 'back_forward') isBackForward = true;
-    } else if (performance && performance.navigation) {
-      isBackForward = (performance.navigation.type === 2); // legacy API
-    }
-  } catch (_) {}
-
-  if (isBackForward) {
-    skipIntro();
-  } else {
-    showIntro();
-  }
-
-  window.addEventListener('pageshow', function (e) {
-    if (e && e.persisted) skipIntro();
-  });
-});
