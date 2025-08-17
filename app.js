@@ -297,3 +297,29 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 
+
+
+// Intro overlay: show every load; logo acts as button (logo.jpg?v=20250818_logoJPG_introGlow_fullscreen_zipfix)
+document.addEventListener('DOMContentLoaded', function(){
+  var intro = document.getElementById('intro-screen');
+  var app   = document.getElementById('app-content');
+  var btn   = document.getElementById('enter-btn');
+  function reveal(){
+    if (intro && intro.parentNode) intro.parentNode.removeChild(intro);
+    if (app) app.classList.remove('hidden');
+    document.body.classList.remove('intro-active');
+  }
+  if (intro){
+    document.body.classList.add('intro-active');
+    // ensure CSS background fallback applied
+    var logoBtn = document.querySelector('#intro-screen .intro-logo');
+    if (logoBtn){ logoBtn.style.backgroundImage = 'url("logo.jpg?v=20250818_logoJPG_introGlow_fullscreen_zipfix")'; }
+    (btn || intro).addEventListener('click', function(){
+      intro.classList.add('hide');
+      setTimeout(reveal, 500);
+    }, { once:true });
+  } else {
+    reveal();
+  }
+});
+
