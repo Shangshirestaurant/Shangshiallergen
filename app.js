@@ -237,72 +237,43 @@ load();
 })();
 
 
-
-// ===== Intro behavior: skip when returning via back/forward in same session =====
+// ===== Intro: show on fresh load/reload, skip only on Back/Forward =====
 document.addEventListener('DOMContentLoaded', function(){
   var intro = document.getElementById('intro-screen');
   var enterBtn = document.getElementById('enter-btn');
   var appContent = document.getElementById('app-content');
 
-  // Detect BFCache/back-forward entries
   var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || null;
   var isBackForward = nav && nav.type === 'back_forward';
 
-  var alreadySeen = sessionStorage.getItem('introSeen') === '1';
-
-  // If user has already seen intro in this tab OR this is a back/forward nav, skip it
-  if (intro && (alreadySeen || isBackForward)) {
-    if (appContent) appContent.classList.remove('hidden');
-    try { intro.parentNode && intro.parentNode.removeChild(intro); } catch(e){}
-    document.body.classList.remove('lock-scroll'); 
-    document.body.classList.remove('intro-active');
-    return;
-  }
-
-  if (intro) {
-    document.body.classList.add('lock-scroll'); 
-    document.body.classList.add('intro-active');
-  }
-
-  if (intro && enterBtn) {
-    enterBtn.addEventListener('click', function(){
-      intro.classList.add('hide');
-      document.body.classList.remove('lock-scroll');
-      document.body.classList.remove('intro-active');
-      // remember for this tab session
-      try { sessionStorage.setItem('introSeen', '1'); } catch(e){}
-      setTimeout(function(){
-        if (intro && intro.parentNode) { intro.parentNode.removeChild(intro); }
-        if (appContent) { appContent.classList.remove('hidden'); }
-      }, 820);
-    });
-  }
-
-  // If restored from BFCache, make sure intro isn't shown again
-  window.addEventListener('pageshow', function(e){
-    if (e && e.persisted) {
-      if (sessionStorage.getItem('introSeen') === '1') {
-        var i = document.getElementById('intro-screen');
-        if (i) {
-          try { i.parentNode && i.parentNode.removeChild(i); } catch(_) {}
+  function showIntro(){
+    if (!intro) return;
+    document.body.classList.add('lock-scroll','intro-active');
+    if (enterBtn) {
+      enterBtn.addEventListener('click', function(){
+        intro.classList.add('hide');
+        document.body.classList.remove('lock-scroll','intro-active');
+        setTimeout(function(){
+          if (intro && intro.parentNode) intro.parentNode.removeChild(intro);
           if (appContent) appContent.classList.remove('hidden');
-          document.body.classList.remove('lock-scroll'); 
-          document.body.classList.remove('intro-active');
-        }
-      }
+        }, 820);
+      });
     }
-  });
+  }
 
-  // Also guard on history back
-  window.addEventListener('popstate', function(){
-    if (sessionStorage.getItem('introSeen') === '1') {
-      var i = document.getElementById('intro-screen');
-      if (i) {
-        try { i.parentNode && i.parentNode.removeChild(i); } catch(_) {}
-        if (appContent) appContent.classList.remove('hidden');
-        document.body.classList.remove('lock-scroll'); 
-        document.body.classList.remove('intro-active');
-      }
-    }
+  function skipIntro(){
+    if (intro && intro.parentNode) try { intro.parentNode.removeChild(intro); } catch(e){}
+    document.body.classList.remove('lock-scroll','intro-active');
+    if (appContent) appContent.classList.remove('hidden');
+  }
+
+  if (isBackForward) {
+    skipIntro();
+  } else {
+    showIntro();
+  }
+
+  window.addEventListener('pageshow', function(e){
+    if (e && e.persisted) skipIntro();
   });
 });
