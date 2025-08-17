@@ -40,6 +40,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,S
   border:1px solid var(--border);
   object-fit:cover;
   display:block;
+  margin-top: 8px;
 }
 .nav-actions{display:flex;gap:8px;align-items:center}
 .mini{padding:8px 12px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--green);font-weight:700}
