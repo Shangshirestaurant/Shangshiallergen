@@ -512,7 +512,7 @@ header.nav .nav-logo{
   position:absolute; left:50%; top:calc(50% + var(--logo-y-offset));
   transform:translate(-50%, -50%); width:56px; height:56px; margin:0;
 }
-@media (min-width:834px){ :root{ --logo-y-offset: -14px; } header.nav .nav-logo{ width:64px; height:64px; } }
+@media (min-width:834px){ header.nav .nav-logo{ width:64px; height:64px; }  :root{ --logo-y-offset: -14px; } header.nav .nav-logo{ width:56px; height:56px; } }
 @media (max-width:360px){ :root{ --logo-y-offset: -14px; } }
 
 /* === Intro Overlay: fullscreen with glow === */
@@ -566,3 +566,10 @@ header.nav .nav-logo{
 /* Keep page content above the bar */
 body{ padding-bottom: max(92px, env(safe-area-inset-bottom) + 92px); }
 
+
+@keyframes logoIdleBob{ from{ transform:translate(-50%,-50%) translateY(0) } to{ transform:translate(-50%,-50%) translateY(-2px) } }
+header.nav .nav-logo{ animation: none; } /* animation handled on the positioned crest variant */
+header.nav .nav-logo:hover img{ filter: drop-shadow(0 8px 22px rgba(0,0,0,.28)); }
+
+/* Ensure sticky panel remains centered & clickable across iOS/Android */
+#stickyPanel{ left:50% !important; right:auto !important; transform: translateX(-50%) !important; pointer-events:auto !important; }
