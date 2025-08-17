@@ -1,15 +1,15 @@
 <!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Shang Shi — Allergen & Dish Guide</title>
-<link rel="stylesheet" href="styles.css?v=20250817_COMBINED_CENTERED">
+<link rel="stylesheet" href="styles.css?v=20250817_centerHero">
 <link rel="manifest" href="manifest.webmanifest">
 </head><body>
-  <!-- Luxury Intro Overlay (always shows) -->
+  <!-- Luxury Intro Overlay (always shows on reload) -->
   <div id="intro-screen" aria-hidden="true">
     <div class="intro-content">
       <h1 class="intro-title">Shang Shi</h1>
       <button class="intro-logo only-logo" id="enter-btn" aria-label="Enter">
-        <img src="logo-shangshi.jpg?v=20250817_COMBINED_CENTERED" alt="Shang Shi Logo"
+        <img src="logo-shangshi.jpg?v=20250817_alwaysIntro_scrollFade" alt="Shang Shi Logo"
              onerror="this.style.display='none'; this.closest('.intro-logo').classList.add('fallback');">
       </button>
     </div>
@@ -29,8 +29,8 @@
 
 <section class="hero"><div class="shell hero-grid">
   <div>
-    <h1 data-i18n="hero_title">Shang Shi Allergen selector</h1>
-    <p class="lead" data-i18n="hero_body">Tick allergens, see safe dishes instantly.</p>
+    <h1 data-i18n="hero_title">Effortless allergen checks for flawless service</h1>
+    <p class="lead" data-i18n="hero_body">Tick allergens, see safe dishes instantly. Designed for iPhone/iPad and quick guest interactions.</p>
     <div class="hero-ctas">
       <a class="btn primary" href="#selector" data-i18n="open_selector">Open selector</a>
       <a class="btn ghost" href="ingredients.html" data-i18n="ingredients">Ingredients</a>
@@ -80,14 +80,14 @@
     <div class="toolbar smallgap">
       <input id="ingInline" class="search" placeholder="Search by ingredient…" data-i18n-placeholder="search_ingredients">
     </div>
-    <p class="note small" data-i18n="disclaimer">⚠️ Always double check with the Chef.</p>
+    <p class="note small" data-i18n="disclaimer">⚠️ Chef must verify codes before FOH use.</p>
   </div>
 </aside>
 
 <button id="toTop" class="fab" aria-label="Scroll to top">↑</button>
 
-<footer class="footer"><div class="shell">© Shang Shi • FOH Allergen & Ingredients Selector</div></footer>
-<script src="app.js?v=20250817_COMBINED_CENTERED" defer></script>
+<footer class="footer"><div class="shell">© Shang Shi • FOH Allergen & Ingredients Guide</div></footer>
+<script src="app.js?v=20250817_alwaysIntro_scrollFade" defer></script>
 
   </div>
 </body></html>
