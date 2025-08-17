@@ -237,20 +237,39 @@ load();
 })();
 
 
-
-// Intro overlay: always show; click logo to enter
+// ===== Luxury Intro Overlay Logic =====
 document.addEventListener('DOMContentLoaded', function(){
   var intro = document.getElementById('intro-screen');
-  var enter = document.getElementById('enter-btn');
+  var enterBtn = document.getElementById('enter-btn');
+  document.body.classList.add('lock-scroll');
+  if(intro && enterBtn){
+    enterBtn.addEventListener('click', function(){
+      intro.classList.add('hide');
+      document.body.classList.remove('lock-scroll');
+      setTimeout(function(){ if(intro && intro.parentNode){ intro.parentNode.removeChild(intro); } }, 820);
+    });
+  }
+});
+
+
+
+// ===== Intro overlay: show every load; logo acts as button =====
+document.addEventListener('DOMContentLoaded', function(){
+  var intro = document.getElementById('intro-screen');
   var app   = document.getElementById('app-content');
+  var btn   = document.getElementById('enter-btn');
+
   function reveal(){
     if (intro && intro.parentNode) intro.parentNode.removeChild(intro);
     if (app) app.classList.remove('hidden');
+    document.body.classList.remove('intro-active');
   }
-  if (intro && enter){
-    enter.addEventListener('click', function(){
+
+  if (intro){
+    document.body.classList.add('intro-active');
+    (btn || intro).addEventListener('click', function(){
       intro.classList.add('hide');
-      setTimeout(reveal, 600);
+      setTimeout(reveal, 500);
     }, { once:true });
   } else {
     reveal();
