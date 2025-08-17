@@ -1,7 +1,7 @@
 const state = { allergens: [], menu: [], selected: new Set(), mode: 'safe', q: '', ingQ: '', lang: 'en' };
 
 /* --- i18n --- */
-const I18N = {"en": {"hero_title": "Effortless allergen checks for flawless service", "hero_body": "Tick allergens, see safe dishes instantly. Designed for iPhone/iPad and quick guest interactions.", "open_selector": "Open selector", "ingredients": "Ingredients", "select_allergens": "Select allergens", "mode_safe": "SAFE (exclude)", "mode_contains": "CONTAINS", "search_dishes": "Search dishes\u2026", "search_ingredients": "Search by ingredient\u2026", "search_dishes_or_ing": "Search dishes or ingredients\u2026", "disclaimer": "\u26a0\ufe0f Chef must verify codes before FOH use.", "no_matches": "No dishes match your filters.", "clear": "Clear", "back": "Back", "preset_glutenfree": "Gluten\u2011free", "preset_dairyfree": "Dairy\u2011free", "preset_nutfree": "Nut\u2011free"}, "et": {"hero_title": "Allergeenide kontroll kiireks teeninduseks", "hero_body": "M\u00e4rgi allergeenid ja n\u00e4e kohe sobivaid roogasid. M\u00f5eldud iPhone\u2019i/iPadi ja kiireks suhtluseks.", "open_selector": "Ava valik", "ingredients": "Koostisosad", "select_allergens": "Vali allergeenid", "mode_safe": "TURVALISED (v\u00e4lista)", "mode_contains": "SISALDAB", "search_dishes": "Otsi roogasid\u2026", "search_ingredients": "Otsi koostisosade j\u00e4rgi\u2026", "search_dishes_or_ing": "Otsi roogi v\u00f5i koostisosi\u2026", "disclaimer": "\u26a0\ufe0f Kokk peab koodid FOH jaoks kinnitama.", "no_matches": "Sinu filtritega roogasid ei leitud.", "clear": "T\u00fchjenda", "back": "Tagasi", "preset_glutenfree": "Gluteenivaba", "preset_dairyfree": "Laktoosivaba", "preset_nutfree": "P\u00e4hklivaba"}};
+const I18N = {"en": {"hero_title": "Shang Shi FOH Allegern Selector", "hero_body": "Tick allergens, see safe dishes instantly.", "open_selector": "Open selector", "ingredients": "Ingredients", "select_allergens": "Select allergens", "mode_safe": "SAFE (exclude)", "mode_contains": "CONTAINS", "search_dishes": "Search dishes\u2026", "search_ingredients": "Search by ingredient\u2026", "search_dishes_or_ing": "Search dishes or ingredients\u2026", "disclaimer": "\u26a0\ufe0f Chef must verify codes before FOH use.", "no_matches": "No dishes match your filters.", "clear": "Clear", "back": "Back", "preset_glutenfree": "Gluten\u2011free", "preset_dairyfree": "Dairy\u2011free", "preset_nutfree": "Nut\u2011free"}, "et": {"hero_title": "Allergeenide kontroll kiireks teeninduseks", "hero_body": "M\u00e4rgi allergeenid ja n\u00e4e kohe sobivaid roogasid. M\u00f5eldud iPhone\u2019i/iPadi ja kiireks suhtluseks.", "open_selector": "Ava valik", "ingredients": "Koostisosad", "select_allergens": "Vali allergeenid", "mode_safe": "TURVALISED (v\u00e4lista)", "mode_contains": "SISALDAB", "search_dishes": "Otsi roogasid\u2026", "search_ingredients": "Otsi koostisosade j\u00e4rgi\u2026", "search_dishes_or_ing": "Otsi roogi v\u00f5i koostisosi\u2026", "disclaimer": "\u26a0\ufe0f Kokk peab koodid FOH jaoks kinnitama.", "no_matches": "Sinu filtritega roogasid ei leitud.", "clear": "T\u00fchjenda", "back": "Tagasi", "preset_glutenfree": "Gluteenivaba", "preset_dairyfree": "Laktoosivaba", "preset_nutfree": "P\u00e4hklivaba"}};
 function applyI18n(){
   const lang = state.lang;
   document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -177,25 +177,132 @@ async function load(){
 load();
 
 
-// ===== Luxury Intro Overlay Logic =====
+
+// --- Extra Presets Wiring (robust to unknown DOM structures) ---
+(function(){
+  const bar = document.querySelector('#preset-bar') || document;
+  const map = {
+    'gluten-free': ['gluten'],
+    'crustacean-free': ['crustacean','crustaceans'],
+    'milk-free': ['milk','dairy'],
+    // shellfish often means crustaceans + molluscs
+    'shellfish-free': ['shellfish','mollusc','molluscs','crustacean','crustaceans']
+  };
+
+  function setCheckboxChecked(cb, val){
+    if(!cb) return;
+    if(cb.checked !== val){
+      cb.checked = val;
+      cb.dispatchEvent(new Event('change', {bubbles:true}));
+      cb.dispatchEvent(new Event('input', {bubbles:true}));
+    }
+  }
+
+  function labelTextFor(cb){
+    // try common structures: <label for=id>, parent label, sibling label
+    const id = cb.getAttribute('id');
+    let lbl = id ? document.querySelector(`label[for="${CSS.escape(id)}"]`) : null;
+    if(!lbl && cb.closest('label')) lbl = cb.closest('label');
+    if(!lbl && cb.parentElement && cb.parentElement.tagName.toLowerCase()==='label') lbl = cb.parentElement;
+    if(!lbl && cb.nextElementSibling && cb.nextElementSibling.tagName.toLowerCase()==='label') lbl = cb.nextElementSibling;
+    return (lbl ? lbl.textContent : cb.getAttribute('data-allergen') || cb.value || '').toLowerCase();
+  }
+
+  function applyPresetName(name){
+    const keywords = map[name];
+    if(!keywords) return;
+    // Strategy: mark allergen checkboxes that MATCH keywords to "ON" (meaning: exclude dishes containing them)
+    const cbs = Array.from(document.querySelectorAll('input[type="checkbox"]'));
+    const allergenBoxes = cbs.filter(el => /allergen|allergy|filter/i.test(el.name||'') || /allergen|allergy|filter/i.test(el.id||'') || el.hasAttribute('data-allergen'));
+    // First, do not touch unrelated checkboxes; only toggle those whose labels match the keywords
+    allergenBoxes.forEach(cb => {
+      const txt = labelTextFor(cb);
+      const hit = keywords.some(kw => txt.includes(kw));
+      if(hit){
+        setCheckboxChecked(cb, true);
+      }
+    });
+    // Optionally, trigger any recompute if the app exposes a function
+    if(typeof window.applyPreset === 'function' && window.applyPreset.length <= 1){
+      try{ window.applyPreset(name); }catch(e){/* no-op */}
+    }
+  }
+
+  bar.addEventListener('click', (e)=>{
+    const btn = e.target.closest('[data-preset]');
+    if(!btn) return;
+    e.preventDefault();
+    applyPresetName(btn.getAttribute('data-preset'));
+  }, {passive:false});
+})();
+
+
+
+// ===== Intro behavior: skip when returning via back/forward in same session =====
 document.addEventListener('DOMContentLoaded', function(){
   var intro = document.getElementById('intro-screen');
   var enterBtn = document.getElementById('enter-btn');
   var appContent = document.getElementById('app-content');
 
-  if(intro){
-    document.body.classList.add('lock-scroll');
+  // Detect BFCache/back-forward entries
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || null;
+  var isBackForward = nav && nav.type === 'back_forward';
+
+  var alreadySeen = sessionStorage.getItem('introSeen') === '1';
+
+  // If user has already seen intro in this tab OR this is a back/forward nav, skip it
+  if (intro && (alreadySeen || isBackForward)) {
+    if (appContent) appContent.classList.remove('hidden');
+    try { intro.parentNode && intro.parentNode.removeChild(intro); } catch(e){}
+    document.body.classList.remove('lock-scroll'); 
+    document.body.classList.remove('intro-active');
+    return;
+  }
+
+  if (intro) {
+    document.body.classList.add('lock-scroll'); 
     document.body.classList.add('intro-active');
   }
-  if(intro && enterBtn){
+
+  if (intro && enterBtn) {
     enterBtn.addEventListener('click', function(){
       intro.classList.add('hide');
       document.body.classList.remove('lock-scroll');
       document.body.classList.remove('intro-active');
+      // remember for this tab session
+      try { sessionStorage.setItem('introSeen', '1'); } catch(e){}
       setTimeout(function(){
-        if(intro && intro.parentNode){ intro.parentNode.removeChild(intro); }
-        if(appContent){ appContent.classList.remove('hidden'); }
+        if (intro && intro.parentNode) { intro.parentNode.removeChild(intro); }
+        if (appContent) { appContent.classList.remove('hidden'); }
       }, 820);
     });
   }
+
+  // If restored from BFCache, make sure intro isn't shown again
+  window.addEventListener('pageshow', function(e){
+    if (e && e.persisted) {
+      if (sessionStorage.getItem('introSeen') === '1') {
+        var i = document.getElementById('intro-screen');
+        if (i) {
+          try { i.parentNode && i.parentNode.removeChild(i); } catch(_) {}
+          if (appContent) appContent.classList.remove('hidden');
+          document.body.classList.remove('lock-scroll'); 
+          document.body.classList.remove('intro-active');
+        }
+      }
+    }
+  });
+
+  // Also guard on history back
+  window.addEventListener('popstate', function(){
+    if (sessionStorage.getItem('introSeen') === '1') {
+      var i = document.getElementById('intro-screen');
+      if (i) {
+        try { i.parentNode && i.parentNode.removeChild(i); } catch(_) {}
+        if (appContent) appContent.classList.remove('hidden');
+        document.body.classList.remove('lock-scroll'); 
+        document.body.classList.remove('intro-active');
+      }
+    }
+  });
 });
