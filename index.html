@@ -1,17 +1,17 @@
 <!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Shang Shi — Allergen & Dish Guide</title>
-<link rel="stylesheet" href="styles.css?v=20250817startover">
+<link rel="stylesheet" href="styles.css?v=20250817_logoOnly">
 <link rel="manifest" href="manifest.webmanifest">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
 </head><body>
-  <!-- Intro Overlay (clean rebuild) -->
+  <!-- Luxury Intro Overlay -->
   <div id="intro-screen" aria-hidden="true">
     <div class="intro-content">
       <h1 class="intro-title">Shang Shi</h1>
-      <button class="intro-logo" id="enter-btn" aria-label="Enter">
-        <img src="logo.svg?v=20250817startover" alt="Shang Shi Logo">
-        <span class="enter-label">Enter</span>
+      <button class="intro-logo only-logo" id="enter-btn" aria-label="Enter">
+        <img src="logo-shangshi.jpg?v=20250817_logoOnly" alt="Shang Shi Logo"
+             onerror="this.style.display='none'; this.closest('.intro-logo').classList.add('fallback');">
       </button>
     </div>
   </div>
@@ -81,14 +81,14 @@
     <div class="toolbar smallgap">
       <input id="ingInline" class="search" placeholder="Search by ingredient…" data-i18n-placeholder="search_ingredients">
     </div>
-    <p class="note small" data-i18n="disclaimer">⚠️ Always double check with the Chef.</p>
+    <p class="note small" data-i18n="disclaimer">⚠️ Chef must verify codes before FOH use.</p>
   </div>
 </aside>
 
 <button id="toTop" class="fab" aria-label="Scroll to top">↑</button>
 
-<footer class="footer"><div class="shell">© Shang Shi • FOH Allergen & Ingredients Selector</div></footer>
-<script src="app.js?v=20250817startover" defer></script>
+<footer class="footer"><div class="shell">© Shang Shi • FOH Allergen & Ingredients Guide</div></footer>
+<script src="app.js?v=20250817_logoOnly" defer></script>
 
   </div>
 </body></html>
