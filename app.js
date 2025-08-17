@@ -323,3 +323,41 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 
+
+
+// Scoped scroll fade only for header + stickyPanel
+(function(){
+  var topEls = [];
+  var header = document.querySelector('header.nav'); if (header) topEls.push(header);
+
+  var bottomEls = [];
+  var sticky = document.getElementById('stickyPanel'); if (sticky) bottomEls.push(sticky);
+
+  topEls.forEach(el => el.classList.add('show-on-scroll'));
+  bottomEls.forEach(el => el.classList.add('show-on-scroll-bottom'));
+
+  var lastY = window.scrollY || 0, ticking = false;
+  function onScroll(){
+    var y = window.scrollY || 0;
+    var down = y > lastY + 6, up = y < lastY - 6;
+    if (down){
+      topEls.forEach(el => { el.classList.remove('show-on-scroll'); el.classList.add('hide-on-scroll'); });
+      bottomEls.forEach(el => { el.classList.remove('show-on-scroll-bottom'); el.classList.add('hide-on-scroll-bottom'); });
+    } else if (up){
+      topEls.forEach(el => { el.classList.remove('hide-on-scroll'); el.classList.add('show-on-scroll'); });
+      bottomEls.forEach(el => { el.classList.remove('hide-on-scroll-bottom'); el.classList.add('show-on-scroll-bottom'); });
+    }
+    lastY = y; ticking = false;
+  }
+  window.addEventListener('scroll', function(){ if(!ticking){ requestAnimationFrame(onScroll); ticking = true; } }, { passive:true });
+})();
+
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('#stickyPanel .cta-btn');
+  if (!btn) return;
+  var ev = new CustomEvent('openAllergens', { bubbles: true });
+  document.dispatchEvent(ev);
+  var target = document.querySelector('#filters, .filters, .allergen-bar, .toolbar');
+  if (target){ target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+});
+
