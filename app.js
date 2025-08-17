@@ -287,3 +287,49 @@ document.addEventListener('DOMContentLoaded', function(){
     if (!ticking){ window.requestAnimationFrame(onScroll); ticking = true; }
   }, { passive:true });
 });
+
+
+
+// Extend scroll behavior: hide bottom 'Select allergens' CTA on scroll down, show on up
+(function(){
+  var lastY = window.scrollY || 0, ticking = false;
+
+  function tagBottomCTA(){
+    var els = Array.from(document.querySelectorAll('.allergen-cta, .selector-cta, .select-allergens-cta'));
+    if (els.length) return els;
+    // Fallback: find element containing 'Select allergens'
+    els = Array.from(document.querySelectorAll('a,button,div,section'))
+      .filter(function(el){ return /select allergens/i.test((el.textContent||'').trim()); });
+    els.forEach(function(el){ el.classList.add('allergen-cta'); });
+    return els;
+  }
+
+  var topEls = Array.from(document.querySelectorAll('.header, .allergen-bar, .filters-bar, .top-controls'));
+  topEls.forEach(function(el){ el.classList.add('show-on-scroll'); });
+
+  var bottomEls = tagBottomCTA();
+  bottomEls.forEach(function(el){ el.classList.add('show-on-scroll-bottom'); });
+
+  function onScroll(){
+    var y = window.scrollY || 0;
+    var down = y > lastY + 6, up = y < lastY - 6;
+    if (down){
+      topEls.forEach(function(el){ el.classList.remove('show-on-scroll'); el.classList.add('hide-on-scroll'); });
+      bottomEls.forEach(function(el){ el.classList.remove('show-on-scroll-bottom'); el.classList.add('hide-on-scroll-bottom'); });
+    } else if (up){
+      topEls.forEach(function(el){ el.classList.remove('hide-on-scroll'); el.classList.add('show-on-scroll'); });
+      bottomEls.forEach(function(el){ el.classList.remove('hide-on-scroll-bottom'); el.classList.add('show-on-scroll-bottom'); });
+    }
+    lastY = y; ticking = false;
+  }
+
+  window.addEventListener('scroll', function(){
+    if (!ticking){ requestAnimationFrame(onScroll); ticking = true; }
+  }, { passive:true });
+
+  // Re-scan after initial render in case CTA mounts later
+  setTimeout(function(){
+    bottomEls = tagBottomCTA();
+    bottomEls.forEach(function(el){ el.classList.add('show-on-scroll-bottom'); });
+  }, 500);
+})();
