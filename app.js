@@ -241,9 +241,11 @@ load();
 document.addEventListener('DOMContentLoaded', function(){
   var intro = document.getElementById('intro-screen');
   var enterBtn = document.getElementById('enter-btn');
+  document.body.classList.add('lock-scroll');
   if(intro && enterBtn){
     enterBtn.addEventListener('click', function(){
       intro.classList.add('hide');
+      document.body.classList.remove('lock-scroll');
       setTimeout(function(){ if(intro && intro.parentNode){ intro.parentNode.removeChild(intro); } }, 820);
     });
   }
