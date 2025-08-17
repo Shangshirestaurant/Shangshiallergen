@@ -238,36 +238,22 @@ load();
 
 
 
-// Scoped scroll fade: only header.nav (top), allergen bar, and #stickyPanel / CTA (bottom)
-(function(){
-  var topEls = [];
-  var header = document.querySelector('header.nav');
-  if (header) topEls.push(header);
-  var bar = document.querySelector('.allergen-bar, .filters-bar, .top-controls');
-  if (bar) topEls.push(bar);
-
-  var bottomEls = [];
-  var sticky = document.getElementById('stickyPanel'); if (sticky) bottomEls.push(sticky);
-  var explicitCTA = document.querySelector('.allergen-cta, .selector-cta, .select-allergens-cta');
-  if (explicitCTA) bottomEls.push(explicitCTA);
-
-  topEls.forEach(function(el){ el.classList.add('show-on-scroll'); });
-  bottomEls.forEach(function(el){ el.classList.add('show-on-scroll-bottom'); });
-
-  var lastY = window.scrollY || 0, ticking = false;
-  function onScroll(){
-    var y = window.scrollY || 0;
-    var down = y > lastY + 6, up = y < lastY - 6;
-    if (down){
-      topEls.forEach(function(el){ el.classList.remove('show-on-scroll'); el.classList.add('hide-on-scroll'); });
-      bottomEls.forEach(function(el){ el.classList.remove('show-on-scroll-bottom'); el.classList.add('hide-on-scroll-bottom'); });
-    } else if (up){
-      topEls.forEach(function(el){ el.classList.remove('hide-on-scroll'); el.classList.add('show-on-scroll'); });
-      bottomEls.forEach(function(el){ el.classList.remove('hide-on-scroll-bottom'); el.classList.add('show-on-scroll-bottom'); });
-    }
-    lastY = y; ticking = false;
+// Intro overlay: always show; click logo to enter
+document.addEventListener('DOMContentLoaded', function(){
+  var intro = document.getElementById('intro-screen');
+  var enter = document.getElementById('enter-btn');
+  var app   = document.getElementById('app-content');
+  function reveal(){
+    if (intro && intro.parentNode) intro.parentNode.removeChild(intro);
+    if (app) app.classList.remove('hidden');
   }
-  window.addEventListener('scroll', function(){
-    if (!ticking){ requestAnimationFrame(onScroll); ticking = true; }
-  }, { passive:true });
-})();
+  if (intro && enter){
+    enter.addEventListener('click', function(){
+      intro.classList.add('hide');
+      setTimeout(reveal, 600);
+    }, { once:true });
+  } else {
+    reveal();
+  }
+});
+

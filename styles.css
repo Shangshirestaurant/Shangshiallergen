@@ -313,78 +313,31 @@ html[data-theme="dark"] .badge{
 }
 
 
-/* === iPad landscape centering for hero + safe-area === */
-.hero, .hero .shell{ width:100%; margin-left:auto; margin-right:auto; text-align:center; }
-.hero-grid > *{ justify-self:center; }
-@media (max-width: 1200px) and (orientation: landscape){
-  .hero-grid{ grid-template-columns:1fr !important; }
-  .hero h1, .hero .lead{ text-align:center; margin-left:auto; margin-right:auto; }
+/* === Intro Overlay (always) === */
+#app-content.hidden{ display:none; }
+#intro-screen{
+  position: fixed; inset: 0; z-index: 2147483647;
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  background: radial-gradient(120% 70% at 50% 0%, #0b0f14 0%, #02140e 45%, #000 100%);
+  opacity: 1; visibility: visible; transition: opacity .6s ease, visibility .6s ease;
+  height: 100dvh; height: 100svh; min-height: -webkit-fill-available;
+  padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom);
 }
-.hero{ padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
-
-/* dynamic viewport height for intro centering on iPad Safari */
-#intro-screen{ height: 100dvh; min-height: 100svh; }
-
-/* Scroll-hide helpers */
-.show-on-scroll{ transform: translateY(0); opacity:1; transition: transform .28s ease, opacity .28s ease; }
-.hide-on-scroll{ transform: translateY(-100%); opacity:0; }
-.show-on-scroll-bottom{ transform: translateY(0); opacity:1; transition: transform .28s ease, opacity .28s ease; }
-.hide-on-scroll-bottom{ transform: translateY(110%); opacity:0; }
-
-
-
-/* --- Glass header + centered floating logo (mobile-safe) --- */
-header.nav.glass{
-  position: sticky; top: 0; z-index: 1000;
-  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .5rem;
-  padding: .45rem clamp(.6rem, 2vw, 1rem);
-  background: color-mix(in srgb, var(--bg) 70%, transparent);
-  -webkit-backdrop-filter: blur(16px) saturate(120%);
-  backdrop-filter: blur(16px) saturate(120%);
-  border-bottom: 1px solid var(--border);
-  padding-left: max(.6rem, env(safe-area-inset-left)); 
-  padding-right: max(.6rem, env(safe-area-inset-right));
+#intro-screen.hide{ opacity:0; visibility:hidden; }
+.intro-title{
+  font-family: 'Cinzel','Times New Roman',serif; color:#fff; font-weight:600;
+  font-size: clamp(28px,5vw,56px); letter-spacing:.28em; text-transform:uppercase;
+  margin: 0 0 28px; text-shadow: 0 2px 12px rgba(212,175,55,.25);
 }
-header.nav .nav-left{justify-self:start; display:flex; gap:.4rem; align-items:center;}
-header.nav .nav-right{justify-self:end; display:flex; gap:.4rem; align-items:center;}
-
-/* Centered logo (replaces legacy .brand) */
-.nav-logo{justify-self:center; width:48px; height:48px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; position:relative; animation:logoFloat 5.5s ease-in-out infinite alternate;}
-.nav-logo img{width:100%; height:100%; border-radius:999px; object-fit:cover; display:block; filter: drop-shadow(0 6px 18px rgba(0,0,0,.25));}
-.nav-logo::before{content:""; position:absolute; inset:-10px; border-radius:999px; background: radial-gradient(60% 60% at 50% 50%, rgba(197,161,99,.35) 0%, rgba(197,161,99,.10) 45%, transparent 75%); filter: blur(7px);}
-.nav-logo:hover{transform: translateY(-2px);}
-@keyframes logoFloat{from{transform:translateY(0)} to{transform:translateY(-1.5px)}}
-
-/* --- Sticky bottom selector bar: iPhone + iPad landscape --- */
-.bottom-sheet,
-#stickyPanel,
-.select-allergens-cta,
-.selector-cta,
-.allergen-cta{
-  position: fixed !important;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: max(12px, env(safe-area-inset-bottom) + 12px);
-  width: min(980px, calc(100% - 32px));
-  z-index: 1200;
-  border-radius: 16px;
-  box-shadow: 0 18px 40px rgba(14,59,44,.15);
-}
-@media (orientation: landscape) and (min-width: 900px){
-  .bottom-sheet,
-  #stickyPanel,
-  .select-allergens-cta,
-  .selector-cta,
-  .allergen-cta{
-    width: min(1100px, calc(100% - 48px));
-    bottom: max(16px, env(safe-area-inset-bottom) + 16px);
-  }
-}
-
-/* Scroll-hide animation for bottom bar (keep centered) */
-.show-on-scroll-bottom  { transform: translate(-50%, 0);    opacity:1; transition: transform .28s ease, opacity .28s ease; }
-.hide-on-scroll-bottom  { transform: translate(-50%, 110%); opacity:0; }
-
-/* Guard: no horizontal scroll from fixed bar */
-html, body { overflow-x: hidden; }
+.intro-logo{ width:176px; height:176px; border-radius:999px; position:relative; border:0; background:transparent; padding:0;
+  cursor:pointer; display:inline-flex; align-items:center; justify-content:center; }
+.intro-logo::before{ content:""; position:absolute; inset:-24px; border-radius:999px;
+  background: radial-gradient(60% 60% at 50% 50%, rgba(212,175,55,.45), rgba(212,175,55,.10) 42%, transparent 70%);
+  filter: blur(18px); }
+.intro-logo img{ width:100%; height:100%; border-radius:999px; object-fit:cover;
+  box-shadow:0 12px 32px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.06); }
+.intro-logo.fallback{ background: radial-gradient(120% 120% at 30% 20%, #F5E6A8 0%, #D4AF37 55%, #A0771B 100%); }
+.intro-logo.fallback::after{ content:"S"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:'Cinzel','Times New Roman',serif; font-size:64px; color:#0B0F14; border-radius:999px; }
+.intro-hint{ margin-top:10px; color:#c8c8c8; font-size:.8rem; letter-spacing:.3em; text-transform:uppercase; }
 
