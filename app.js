@@ -177,61 +177,25 @@ async function load(){
 load();
 
 
+// ===== Luxury Intro Overlay Logic =====
+document.addEventListener('DOMContentLoaded', function(){
+  var intro = document.getElementById('intro-screen');
+  var enterBtn = document.getElementById('enter-btn');
+  var appContent = document.getElementById('app-content');
 
-// --- Extra Presets Wiring (robust to unknown DOM structures) ---
-(function(){
-  const bar = document.querySelector('#preset-bar') || document;
-  const map = {
-    'gluten-free': ['gluten'],
-    'crustacean-free': ['crustacean','crustaceans'],
-    'milk-free': ['milk','dairy'],
-    // shellfish often means crustaceans + molluscs
-    'shellfish-free': ['shellfish','mollusc','molluscs','crustacean','crustaceans']
-  };
-
-  function setCheckboxChecked(cb, val){
-    if(!cb) return;
-    if(cb.checked !== val){
-      cb.checked = val;
-      cb.dispatchEvent(new Event('change', {bubbles:true}));
-      cb.dispatchEvent(new Event('input', {bubbles:true}));
-    }
+  if(intro){
+    document.body.classList.add('lock-scroll');
+    document.body.classList.add('intro-active');
   }
-
-  function labelTextFor(cb){
-    // try common structures: <label for=id>, parent label, sibling label
-    const id = cb.getAttribute('id');
-    let lbl = id ? document.querySelector(`label[for="${CSS.escape(id)}"]`) : null;
-    if(!lbl && cb.closest('label')) lbl = cb.closest('label');
-    if(!lbl && cb.parentElement && cb.parentElement.tagName.toLowerCase()==='label') lbl = cb.parentElement;
-    if(!lbl && cb.nextElementSibling && cb.nextElementSibling.tagName.toLowerCase()==='label') lbl = cb.nextElementSibling;
-    return (lbl ? lbl.textContent : cb.getAttribute('data-allergen') || cb.value || '').toLowerCase();
-  }
-
-  function applyPresetName(name){
-    const keywords = map[name];
-    if(!keywords) return;
-    // Strategy: mark allergen checkboxes that MATCH keywords to "ON" (meaning: exclude dishes containing them)
-    const cbs = Array.from(document.querySelectorAll('input[type="checkbox"]'));
-    const allergenBoxes = cbs.filter(el => /allergen|allergy|filter/i.test(el.name||'') || /allergen|allergy|filter/i.test(el.id||'') || el.hasAttribute('data-allergen'));
-    // First, do not touch unrelated checkboxes; only toggle those whose labels match the keywords
-    allergenBoxes.forEach(cb => {
-      const txt = labelTextFor(cb);
-      const hit = keywords.some(kw => txt.includes(kw));
-      if(hit){
-        setCheckboxChecked(cb, true);
-      }
+  if(intro && enterBtn){
+    enterBtn.addEventListener('click', function(){
+      intro.classList.add('hide');
+      document.body.classList.remove('lock-scroll');
+      document.body.classList.remove('intro-active');
+      setTimeout(function(){
+        if(intro && intro.parentNode){ intro.parentNode.removeChild(intro); }
+        if(appContent){ appContent.classList.remove('hidden'); }
+      }, 820);
     });
-    // Optionally, trigger any recompute if the app exposes a function
-    if(typeof window.applyPreset === 'function' && window.applyPreset.length <= 1){
-      try{ window.applyPreset(name); }catch(e){/* no-op */}
-    }
   }
-
-  bar.addEventListener('click', (e)=>{
-    const btn = e.target.closest('[data-preset]');
-    if(!btn) return;
-    e.preventDefault();
-    applyPresetName(btn.getAttribute('data-preset'));
-  }, {passive:false});
-})();
+});
