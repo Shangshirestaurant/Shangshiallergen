@@ -1,9 +1,24 @@
 <!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Shang Shi — Allergen & Dish Guide</title>
-<link rel="stylesheet" href="styles.css?v=20250817m">
+<link rel="stylesheet" href="styles.css?v=20250817startover">
 <link rel="manifest" href="manifest.webmanifest">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
 </head><body>
+  <!-- Intro Overlay (clean rebuild) -->
+  <div id="intro-screen" aria-hidden="true">
+    <div class="intro-content">
+      <h1 class="intro-title">Shang Shi</h1>
+      <button class="intro-logo" id="enter-btn" aria-label="Enter">
+        <img src="logo.svg?v=20250817startover" alt="Shang Shi Logo">
+        <span class="enter-label">Enter</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main App Content -->
+  <div id="app-content" class="hidden">
+
 <header class="nav">
   <div class="nav-left"><div class="nav-actions">
     <button id="langToggle" class="mini ghost" aria-label="Language">EN</button>
@@ -73,6 +88,7 @@
 <button id="toTop" class="fab" aria-label="Scroll to top">↑</button>
 
 <footer class="footer"><div class="shell">© Shang Shi • FOH Allergen & Ingredients Selector</div></footer>
-<script src="app.js?v=20250817m" defer></script>
+<script src="app.js?v=20250817startover" defer></script>
 
+  </div>
 </body></html>

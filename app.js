@@ -169,7 +169,7 @@ function wireUI(){
 
 async function load(){
   try{
-    const [a,m] = await Promise.all([fetch('allergens.json?v=20250817m'), fetch('menu.json?v=20250817m')]);
+    const [a,m] = await Promise.all([fetch('allergens.json'), fetch('menu.json')]);
     state.allergens = await a.json(); state.menu = await m.json();
   }catch(e){ /* offline first load will use cache */ }
   renderDropdown(); renderList(); renderIngredients(); wireUI();
@@ -234,4 +234,51 @@ load();
     e.preventDefault();
     applyPresetName(btn.getAttribute('data-preset'));
   }, {passive:false});
+})();
+
+
+// === Clean Intro Overlay Logic ===
+(function(){ 
+  var INTRO_SHOW_EVERY_VISIT = true; // set to false to show only once per device (localStorage)
+  document.addEventListener('DOMContentLoaded', function () {
+    var intro = document.getElementById('intro-screen');
+    var enterBtn = document.getElementById('enter-btn');
+    var appContent = document.getElementById('app-content');
+
+    function revealApp(){ 
+      if (intro && intro.parentNode) try { intro.parentNode.removeChild(intro); } catch(e){}
+      document.body.classList.remove('lock-scroll','intro-active');
+      if (appContent) appContent.classList.remove('hidden');
+    }
+
+    function showIntro(){ 
+      if (!intro) { revealApp(); return; }
+      document.body.classList.add('lock-scroll','intro-active');
+      if (enterBtn) enterBtn.addEventListener('click', function () {
+        intro.classList.add('hide');
+        document.body.classList.remove('lock-scroll','intro-active');
+        if (!INTRO_SHOW_EVERY_VISIT) try { localStorage.setItem('introSeen','1'); } catch(_){} 
+        setTimeout(revealApp, 820);
+      }, { once:true });
+    }
+
+    function skipIntro(){ revealApp(); }
+
+    var isBackForward = false;
+    try {
+      var navs = performance.getEntriesByType && performance.getEntriesByType('navigation');
+      if (navs && navs[0] && navs[0].type === 'back_forward') isBackForward = true;
+      else if (performance && performance.navigation) isBackForward = (performance.navigation.type === 2);
+    } catch(_){}
+
+    if (!INTRO_SHOW_EVERY_VISIT) {
+      try { if (localStorage.getItem('introSeen') === '1') { skipIntro(); return; } } catch(_){}
+    }
+
+    if (isBackForward) skipIntro(); else showIntro();
+
+    window.addEventListener('pageshow', function (e) {
+      if (e && e.persisted) skipIntro();
+    });
+  });
 })();
