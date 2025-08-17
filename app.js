@@ -1,7 +1,7 @@
 const state = { allergens: [], menu: [], selected: new Set(), mode: 'safe', q: '', ingQ: '', lang: 'en' };
 
 /* --- i18n --- */
-const I18N = {"en": {"hero_title": "Effortless allergen checks for flawless service", "hero_body": "Tick allergens, see safe dishes instantly. Designed for iPhone/iPad and quick guest interactions.", "open_selector": "Open selector", "ingredients": "Ingredients", "select_allergens": "Select allergens", "mode_safe": "SAFE (exclude)", "mode_contains": "CONTAINS", "search_dishes": "Search dishes\u2026", "search_ingredients": "Search by ingredient\u2026", "search_dishes_or_ing": "Search dishes or ingredients\u2026", "disclaimer": "\u26a0\ufe0f Chef must verify codes before FOH use.", "no_matches": "No dishes match your filters.", "clear": "Clear", "back": "Back", "preset_glutenfree": "Gluten\u2011free", "preset_dairyfree": "Dairy\u2011free", "preset_nutfree": "Nut\u2011free"}, "et": {"hero_title": "Allergeenide kontroll kiireks teeninduseks", "hero_body": "M\u00e4rgi allergeenid ja n\u00e4e kohe sobivaid roogasid. M\u00f5eldud iPhone\u2019i/iPadi ja kiireks suhtluseks.", "open_selector": "Ava valik", "ingredients": "Koostisosad", "select_allergens": "Vali allergeenid", "mode_safe": "TURVALISED (v\u00e4lista)", "mode_contains": "SISALDAB", "search_dishes": "Otsi roogasid\u2026", "search_ingredients": "Otsi koostisosade j\u00e4rgi\u2026", "search_dishes_or_ing": "Otsi roogi v\u00f5i koostisosi\u2026", "disclaimer": "\u26a0\ufe0f Kokk peab koodid FOH jaoks kinnitama.", "no_matches": "Sinu filtritega roogasid ei leitud.", "clear": "T\u00fchjenda", "back": "Tagasi", "preset_glutenfree": "Gluteenivaba", "preset_dairyfree": "Laktoosivaba", "preset_nutfree": "P\u00e4hklivaba"}};
+const I18N = {"en": {"hero_title": "Shang Shi FOH Allegern Selector", "hero_body": "Tick allergens, see safe dishes instantly.", "open_selector": "Open selector", "ingredients": "Ingredients", "select_allergens": "Select allergens", "mode_safe": "SAFE (exclude)", "mode_contains": "CONTAINS", "search_dishes": "Search dishes\u2026", "search_ingredients": "Search by ingredient\u2026", "search_dishes_or_ing": "Search dishes or ingredients\u2026", "disclaimer": "\u26a0\ufe0f Chef must verify codes before FOH use.", "no_matches": "No dishes match your filters.", "clear": "Clear", "back": "Back", "preset_glutenfree": "Gluten\u2011free", "preset_dairyfree": "Dairy\u2011free", "preset_nutfree": "Nut\u2011free"}, "et": {"hero_title": "Allergeenide kontroll kiireks teeninduseks", "hero_body": "M\u00e4rgi allergeenid ja n\u00e4e kohe sobivaid roogasid. M\u00f5eldud iPhone\u2019i/iPadi ja kiireks suhtluseks.", "open_selector": "Ava valik", "ingredients": "Koostisosad", "select_allergens": "Vali allergeenid", "mode_safe": "TURVALISED (v\u00e4lista)", "mode_contains": "SISALDAB", "search_dishes": "Otsi roogasid\u2026", "search_ingredients": "Otsi koostisosade j\u00e4rgi\u2026", "search_dishes_or_ing": "Otsi roogi v\u00f5i koostisosi\u2026", "disclaimer": "\u26a0\ufe0f Kokk peab koodid FOH jaoks kinnitama.", "no_matches": "Sinu filtritega roogasid ei leitud.", "clear": "T\u00fchjenda", "back": "Tagasi", "preset_glutenfree": "Gluteenivaba", "preset_dairyfree": "Laktoosivaba", "preset_nutfree": "P\u00e4hklivaba"}};
 function applyI18n(){
   const lang = state.lang;
   document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -237,53 +237,37 @@ load();
 })();
 
 
-// === ALWAYS show intro on every reload; smooth fade; scroll-hide allergen bar ===
-document.addEventListener('DOMContentLoaded', function(){
-  var intro = document.getElementById('intro-screen');
-  var enterBtn = document.getElementById('enter-btn');
-  var appContent = document.getElementById('app-content');
 
-  function reveal(){ 
-    if (intro && intro.parentNode) try { intro.parentNode.removeChild(intro); } catch(e){}
-    document.body.classList.remove('lock-scroll','intro-active');
-    if (appContent) appContent.classList.remove('hidden');
-  }
+// Scoped scroll fade: only header.nav (top), allergen bar, and #stickyPanel / CTA (bottom)
+(function(){
+  var topEls = [];
+  var header = document.querySelector('header.nav');
+  if (header) topEls.push(header);
+  var bar = document.querySelector('.allergen-bar, .filters-bar, .top-controls');
+  if (bar) topEls.push(bar);
 
-  // ALWAYS show intro (ignore session/back-forward)
-  if (intro){
-    document.body.classList.add('lock-scroll','intro-active');
-    if (enterBtn){
-      enterBtn.addEventListener('click', function(){
-        intro.classList.add('hide');
-        document.body.classList.remove('lock-scroll','intro-active');
-        setTimeout(reveal, 600);
-      }, { once:true });
-    }
-  } else {
-    reveal();
-  }
+  var bottomEls = [];
+  var sticky = document.getElementById('stickyPanel'); if (sticky) bottomEls.push(sticky);
+  var explicitCTA = document.querySelector('.allergen-cta, .selector-cta, .select-allergens-cta');
+  if (explicitCTA) bottomEls.push(explicitCTA);
 
-  // Scroll fade for allergen selector/top controls
-  var lastY = window.scrollY || 0;
-  var ticking = false;
-  var headerEls = Array.from(document.querySelectorAll('.header, .allergen-bar, .filters-bar, .top-controls'));
-  headerEls.forEach(function(el){ el.classList.add('show-on-scroll'); });
+  topEls.forEach(function(el){ el.classList.add('show-on-scroll'); });
+  bottomEls.forEach(function(el){ el.classList.add('show-on-scroll-bottom'); });
 
+  var lastY = window.scrollY || 0, ticking = false;
   function onScroll(){
     var y = window.scrollY || 0;
-    var down = y > lastY + 6;      // threshold to avoid jitter
-    var up   = y < lastY - 6;
-
+    var down = y > lastY + 6, up = y < lastY - 6;
     if (down){
-      headerEls.forEach(function(el){ el.classList.remove('show-on-scroll'); el.classList.add('hide-on-scroll'); });
+      topEls.forEach(function(el){ el.classList.remove('show-on-scroll'); el.classList.add('hide-on-scroll'); });
+      bottomEls.forEach(function(el){ el.classList.remove('show-on-scroll-bottom'); el.classList.add('hide-on-scroll-bottom'); });
     } else if (up){
-      headerEls.forEach(function(el){ el.classList.remove('hide-on-scroll'); el.classList.add('show-on-scroll'); });
+      topEls.forEach(function(el){ el.classList.remove('hide-on-scroll'); el.classList.add('show-on-scroll'); });
+      bottomEls.forEach(function(el){ el.classList.remove('hide-on-scroll-bottom'); el.classList.add('show-on-scroll-bottom'); });
     }
-    lastY = y;
-    ticking = false;
+    lastY = y; ticking = false;
   }
-
   window.addEventListener('scroll', function(){
-    if (!ticking){ window.requestAnimationFrame(onScroll); ticking = true; }
+    if (!ticking){ requestAnimationFrame(onScroll); ticking = true; }
   }, { passive:true });
-});
+})();
