@@ -361,3 +361,27 @@ document.addEventListener('click', function(e){
   if (target){ target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 });
 
+
+
+// Self-heal: ensure stickyPanel exists and is clickable
+document.addEventListener('DOMContentLoaded', function(){
+  var panel = document.getElementById('stickyPanel');
+  if (!panel){
+    panel = document.createElement('div');
+    panel.id = 'stickyPanel';
+    panel.innerHTML = '<button id="open-allergens" class="cta-btn" type="button">Select allergens</button>';
+    var header = document.querySelector('header.nav');
+    (header && header.parentNode) ? header.parentNode.insertBefore(panel, header.nextSibling) : document.body.appendChild(panel);
+  }
+  var btn = panel.querySelector('.cta-btn');
+  if (btn){
+    btn.addEventListener('click', function(){
+      // Dispatch custom event for your app to handle
+      document.dispatchEvent(new CustomEvent('openAllergens', { bubbles:true }));
+      // Fallback: scroll to filters if present
+      var target = document.querySelector('#filters, .filters, .allergen-bar, .toolbar');
+      if (target){ target.scrollIntoView({ behavior:'smooth', block:'start' }); }
+    });
+  }
+});
+

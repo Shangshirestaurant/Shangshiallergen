@@ -537,3 +537,32 @@ header.nav .nav-logo{
 
 /* hard center stickyPanel wrapper */
 #stickyPanel{ left:50% !important; right:auto !important; transform:translateX(-50%) !important; }
+
+
+/* === Sticky Allergen Bar: centered & clickable (restored) === */
+#stickyPanel{
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: max(12px, env(safe-area-inset-bottom) + 12px);
+  z-index: 1200; /* intro overlay uses much higher z; this sits below it */
+  display: block;
+  width: 100%;
+  max-width: min(980px, calc(100% - 32px));
+}
+#stickyPanel .cta-btn{
+  display:block; width:100%;
+  padding:14px 18px;
+  border-radius:14px; border:1px solid rgba(0,0,0,.08);
+  background: rgba(255,255,255,.92);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  box-shadow: 0 18px 40px rgba(0,0,0,.18);
+  font-weight:600; letter-spacing:.02em;
+}
+/* Ensure it's not hidden by any scroll-hide classes from older builds */
+#stickyPanel.hide-on-scroll-bottom{ opacity:1 !important; transform: translateX(-50%) !important; }
+#stickyPanel.show-on-scroll-bottom{ opacity:1 !important; transform: translateX(-50%) !important; }
+
+/* Keep page content above the bar */
+body{ padding-bottom: max(92px, env(safe-area-inset-bottom) + 92px); }
+
