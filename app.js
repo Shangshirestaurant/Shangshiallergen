@@ -1,7 +1,7 @@
 const state = { allergens: [], menu: [], selected: new Set(), mode: 'safe', q: '', ingQ: '', lang: 'en' };
 
 /* --- i18n --- */
-const I18N = {"en": {"hero_title": "Shang Shi FOH Allegern Selector", "hero_body": "Tick allergens, see safe dishes instantly.", "open_selector": "Open selector", "ingredients": "Ingredients", "select_allergens": "Select allergens", "mode_safe": "SAFE (exclude)", "mode_contains": "CONTAINS", "search_dishes": "Search dishes\u2026", "search_ingredients": "Search by ingredient\u2026", "search_dishes_or_ing": "Search dishes or ingredients\u2026", "disclaimer": "\u26a0\ufe0f Chef must verify codes before FOH use.", "no_matches": "No dishes match your filters.", "clear": "Clear", "back": "Back", "preset_glutenfree": "Gluten\u2011free", "preset_dairyfree": "Dairy\u2011free", "preset_nutfree": "Nut\u2011free"}, "et": {"hero_title": "Allergeenide kontroll kiireks teeninduseks", "hero_body": "M\u00e4rgi allergeenid ja n\u00e4e kohe sobivaid roogasid. M\u00f5eldud iPhone\u2019i/iPadi ja kiireks suhtluseks.", "open_selector": "Ava valik", "ingredients": "Koostisosad", "select_allergens": "Vali allergeenid", "mode_safe": "TURVALISED (v\u00e4lista)", "mode_contains": "SISALDAB", "search_dishes": "Otsi roogasid\u2026", "search_ingredients": "Otsi koostisosade j\u00e4rgi\u2026", "search_dishes_or_ing": "Otsi roogi v\u00f5i koostisosi\u2026", "disclaimer": "\u26a0\ufe0f Kokk peab koodid FOH jaoks kinnitama.", "no_matches": "Sinu filtritega roogasid ei leitud.", "clear": "T\u00fchjenda", "back": "Tagasi", "preset_glutenfree": "Gluteenivaba", "preset_dairyfree": "Laktoosivaba", "preset_nutfree": "P\u00e4hklivaba"}};
+const I18N = {"en": {"hero_title": "Effortless allergen checks for flawless service", "hero_body": "Tick allergens, see safe dishes instantly. Designed for iPhone/iPad and quick guest interactions.", "open_selector": "Open selector", "ingredients": "Ingredients", "select_allergens": "Select allergens", "mode_safe": "SAFE (exclude)", "mode_contains": "CONTAINS", "search_dishes": "Search dishes\u2026", "search_ingredients": "Search by ingredient\u2026", "search_dishes_or_ing": "Search dishes or ingredients\u2026", "disclaimer": "\u26a0\ufe0f Chef must verify codes before FOH use.", "no_matches": "No dishes match your filters.", "clear": "Clear", "back": "Back", "preset_glutenfree": "Gluten\u2011free", "preset_dairyfree": "Dairy\u2011free", "preset_nutfree": "Nut\u2011free"}, "et": {"hero_title": "Allergeenide kontroll kiireks teeninduseks", "hero_body": "M\u00e4rgi allergeenid ja n\u00e4e kohe sobivaid roogasid. M\u00f5eldud iPhone\u2019i/iPadi ja kiireks suhtluseks.", "open_selector": "Ava valik", "ingredients": "Koostisosad", "select_allergens": "Vali allergeenid", "mode_safe": "TURVALISED (v\u00e4lista)", "mode_contains": "SISALDAB", "search_dishes": "Otsi roogasid\u2026", "search_ingredients": "Otsi koostisosade j\u00e4rgi\u2026", "search_dishes_or_ing": "Otsi roogi v\u00f5i koostisosi\u2026", "disclaimer": "\u26a0\ufe0f Kokk peab koodid FOH jaoks kinnitama.", "no_matches": "Sinu filtritega roogasid ei leitud.", "clear": "T\u00fchjenda", "back": "Tagasi", "preset_glutenfree": "Gluteenivaba", "preset_dairyfree": "Laktoosivaba", "preset_nutfree": "P\u00e4hklivaba"}};
 function applyI18n(){
   const lang = state.lang;
   document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -235,18 +235,3 @@ load();
     applyPresetName(btn.getAttribute('data-preset'));
   }, {passive:false});
 })();
-
-
-// ===== Luxury Intro Overlay Logic =====
-document.addEventListener('DOMContentLoaded', function(){
-  var intro = document.getElementById('intro-screen');
-  var enterBtn = document.getElementById('enter-btn');
-  document.body.classList.add('lock-scroll');
-  if(intro && enterBtn){
-    enterBtn.addEventListener('click', function(){
-      intro.classList.add('hide');
-      document.body.classList.remove('lock-scroll');
-      setTimeout(function(){ if(intro && intro.parentNode){ intro.parentNode.removeChild(intro); } }, 820);
-    });
-  }
-});
