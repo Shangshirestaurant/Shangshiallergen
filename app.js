@@ -235,3 +235,16 @@ load();
     applyPresetName(btn.getAttribute('data-preset'));
   }, {passive:false});
 })();
+
+
+// ===== Luxury Intro Overlay Logic =====
+document.addEventListener('DOMContentLoaded', function(){
+  var intro = document.getElementById('intro-screen');
+  var enterBtn = document.getElementById('enter-btn');
+  if(intro && enterBtn){
+    enterBtn.addEventListener('click', function(){
+      intro.classList.add('hide');
+      setTimeout(function(){ if(intro && intro.parentNode){ intro.parentNode.removeChild(intro); } }, 820);
+    });
+  }
+});
