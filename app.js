@@ -385,3 +385,26 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 
+
+
+// Disable any auto-hide-on-scroll behavior; keep header & bar visible
+(function(){
+  try{
+    var header = document.querySelector('header.nav');
+    if (header){
+      header.classList.add('show-on-scroll');
+      header.classList.remove('hide-on-scroll');
+      // If an old scroll handler exists, replace with a no-op
+      window.addEventListener('scroll', function(){ 
+        header.classList.add('show-on-scroll'); 
+        header.classList.remove('hide-on-scroll'); 
+      }, { passive:true });
+    }
+    var panel = document.getElementById('stickyPanel');
+    if (panel){
+      panel.classList.add('show-on-scroll-bottom');
+      panel.classList.remove('hide-on-scroll-bottom');
+    }
+  }catch(e){/* noop */}
+})();
+
