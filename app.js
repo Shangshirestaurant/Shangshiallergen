@@ -237,42 +237,63 @@ load();
 })();
 
 
-// ===== Luxury Intro Overlay Logic =====
+
+// Intro overlay: always show until user taps Enter (iOS-safe)
 document.addEventListener('DOMContentLoaded', function(){
   var intro = document.getElementById('intro-screen');
   var enterBtn = document.getElementById('enter-btn');
-  document.body.classList.add('lock-scroll');
-  if(intro && enterBtn){
+  var appContent = document.getElementById('app-content');
+  function reveal(){
+    if (intro && intro.parentNode) { try { intro.parentNode.removeChild(intro); } catch(e){} }
+    if (appContent) appContent.classList.remove('hidden');
+  }
+  if (intro && enterBtn){
     enterBtn.addEventListener('click', function(){
       intro.classList.add('hide');
-      document.body.classList.remove('lock-scroll');
-      setTimeout(function(){ if(intro && intro.parentNode){ intro.parentNode.removeChild(intro); } }, 820);
-    });
+      setTimeout(reveal, 600);
+    }, { once:true });
+  } else {
+    reveal();
   }
 });
 
 
 
-// ===== Intro overlay: show every load; logo acts as button =====
-document.addEventListener('DOMContentLoaded', function(){
-  var intro = document.getElementById('intro-screen');
-  var app   = document.getElementById('app-content');
-  var btn   = document.getElementById('enter-btn');
+// Scoped scroll fade: header.nav, toolbar (filters), and bottom-sheet if present
+(function(){
+  var topEls = [];
+  var header = document.querySelector('header.nav'); if (header) topEls.push(header);
+  var toolbar = document.querySelector('.toolbar, .allergen-bar, .filters-bar, .top-controls'); if (toolbar) topEls.push(toolbar);
 
-  function reveal(){
-    if (intro && intro.parentNode) intro.parentNode.removeChild(intro);
-    if (app) app.classList.remove('hidden');
-    document.body.classList.remove('intro-active');
+  var bottomEls = [];
+  var sticky = document.getElementById('stickyPanel'); if (sticky) bottomEls.push(sticky);
+  var sheet = document.querySelector('.bottom-sheet'); if (sheet) bottomEls.push(sheet);
+
+  topEls.forEach(function(el){ el.classList.add('show-on-scroll'); });
+  bottomEls.forEach(function(el){ el.classList.add('show-on-scroll-bottom'); });
+
+  var lastY = window.scrollY || 0, ticking = false;
+  function onScroll(){
+    var y = window.scrollY || 0;
+    var down = y > lastY + 6, up = y < lastY - 6;
+    if (down){
+      topEls.forEach(el => { el.classList.remove('show-on-scroll'); el.classList.add('hide-on-scroll'); });
+      bottomEls.forEach(el => { el.classList.remove('show-on-scroll-bottom'); el.classList.add('hide-on-scroll-bottom'); });
+    } else if (up){
+      topEls.forEach(el => { el.classList.remove('hide-on-scroll'); el.classList.add('show-on-scroll'); });
+      bottomEls.forEach(el => { el.classList.remove('hide-on-scroll-bottom'); el.classList.add('show-on-scroll-bottom'); });
+    }
+    lastY = y; ticking = false;
   }
+  window.addEventListener('scroll', function(){ if (!ticking){ requestAnimationFrame(onScroll); ticking = true; } }, { passive:true });
+})();
 
-  if (intro){
-    document.body.classList.add('intro-active');
-    (btn || intro).addEventListener('click', function(){
-      intro.classList.add('hide');
-      setTimeout(reveal, 500);
-    }, { once:true });
-  } else {
-    reveal();
+
+// Ensure intro logo element also has a CSS background as fallback
+document.addEventListener('DOMContentLoaded', function(){
+  var logoBtn = document.querySelector('#intro-screen .intro-logo');
+  if (logoBtn && logoBtn.dataset.bg){
+    logoBtn.style.backgroundImage = 'url("' + logoBtn.dataset.bg + '")';
   }
 });
 
