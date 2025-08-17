@@ -175,3 +175,45 @@ async function load(){
   renderDropdown(); renderList(); renderIngredients(); wireUI();
 }
 load();
+
+
+// === Combined: ALWAYS show intro, smooth fade, scroll-fade header, modern theme ===
+document.addEventListener('DOMContentLoaded', function(){
+  var intro = document.getElementById('intro-screen');
+  var enterBtn = document.getElementById('enter-btn');
+  var appContent = document.getElementById('app-content');
+
+  function reveal(){ 
+    if (intro && intro.parentNode) try { intro.parentNode.removeChild(intro); } catch(e){}
+    document.body.classList.remove('lock-scroll','intro-active');
+    if (appContent) appContent.classList.remove('hidden');
+  }
+
+  // Always show intro
+  if (intro){
+    document.body.classList.add('lock-scroll','intro-active');
+    if (enterBtn){
+      enterBtn.addEventListener('click', function(){
+        intro.classList.add('hide');
+        document.body.classList.remove('lock-scroll','intro-active');
+        setTimeout(reveal, 600);
+      }, { once:true });
+    }
+  } else {
+    reveal();
+  }
+
+  // Scroll fade for top bars
+  var lastY = window.scrollY || 0, ticking = false;
+  var headerEls = Array.from(document.querySelectorAll('.header, .allergen-bar, .filters-bar, .top-controls'));
+  headerEls.forEach(function(el){ el.classList.add('show-on-scroll'); });
+
+  function onScroll(){
+    var y = window.scrollY || 0;
+    var down = y > lastY + 6, up = y < lastY - 6;
+    if (down) headerEls.forEach(el=>{ el.classList.remove('show-on-scroll'); el.classList.add('hide-on-scroll'); });
+    else if (up) headerEls.forEach(el=>{ el.classList.remove('hide-on-scroll'); el.classList.add('show-on-scroll'); });
+    lastY = y; ticking = false;
+  }
+  window.addEventListener('scroll', function(){ if (!ticking){ requestAnimationFrame(onScroll); ticking = true; } }, { passive:true });
+});

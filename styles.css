@@ -224,3 +224,136 @@ body.theme-luxury{
   .allergen-bar, .filters-bar, .top-controls{ border-radius:12px; }
 }
 
+
+
+/* ===== Modern Chinese Elegance + Intro + Scroll-Fade ===== */
+:root{
+  --bg:#0b0f14; --bg-2:#0a1116; --card:#0f141b;
+  --ivory:#F5F2E9; --muted:#C9C6BD;
+  --gold:#D4AF37; --gold-2:#A0771B;
+  --jade:rgba(11, 78, 67, 0.42); --jade-border:rgba(33, 150, 135, 0.45);
+  --border:rgba(255,255,255,.08); --shadow:0 10px 30px rgba(0,0,0,.35);
+}
+#app-content.hidden{display:none;}
+html,body{height:100%;}
+body.lock-scroll{overflow:hidden;}
+body.theme-luxury{
+  background: radial-gradient(120% 80% at 50% 0%, var(--bg-2) 0%, var(--bg) 45%, #000 100%);
+  color: var(--ivory); font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+
+/* Intro overlay */
+#intro-screen{
+  position:fixed; inset:0;
+  background: radial-gradient(120% 70% at 50% 0%, #0b0f14 0%, #02140e 45%, #000 100%);
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  z-index:2147483647; opacity:1; visibility:visible;
+  transition:opacity .6s ease, visibility .6s ease;
+  height:100dvh; height:100svh; min-height:100lvh; min-height:-webkit-fill-available;
+  padding-top:env(safe-area-inset-top); padding-bottom:env(safe-area-inset-bottom);
+}
+#intro-screen.hide{opacity:0; visibility:hidden;}
+.intro-title{
+  font-family:'Cinzel','Times New Roman',serif; color:#fff; font-weight:600;
+  font-size:clamp(28px,5vw,56px); letter-spacing:.28em; text-transform:uppercase;
+  margin:0 0 28px; text-shadow:0 2px 12px rgba(212,175,55,.25);
+  animation: titleFade .8s ease-out both;
+}
+@keyframes titleFade{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
+.intro-logo{
+  width:176px; height:176px; border-radius:999px; position:relative; border:none; background:transparent; padding:0; cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center; outline-offset:6px;
+  animation: logoIn .7s .15s ease-out both; transition: transform .25s ease;
+}
+@keyframes logoIn{ from{opacity:0; transform:scale(.92);} to{opacity:1; transform:scale(1);} }
+.intro-logo::before{
+  content:""; position:absolute; inset:-24px; border-radius:999px;
+  background: radial-gradient(60% 60% at 50% 50%, rgba(212,175,55,.50) 0%, rgba(212,175,55,.10) 42%, transparent 70%);
+  filter: blur(18px); z-index:0; transition: opacity .25s ease, transform .25s ease;
+}
+.intro-logo img{
+  width:100%; height:100%; border-radius:999px; object-fit:cover; position:relative; z-index:2;
+  box-shadow:0 12px 32px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.06);
+  transition: transform .25s ease;
+}
+.intro-logo:hover{ transform: translateZ(0) scale(1.02); }
+.intro-logo:hover::before{ opacity:.9; transform: scale(1.06); }
+.intro-logo:hover img{ transform: scale(1.02); }
+.intro-logo.fallback{ background: radial-gradient(120% 120% at 30% 20%, #F5E6A8 0%, #D4AF37 55%, #A0771B 100%); }
+.intro-logo.fallback::after{
+  content:"S"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:'Cinzel','Times New Roman',serif; font-size:64px; color:#0B0F14; letter-spacing:.02em; border-radius:999px;
+}
+
+/* Sticky header + jade glass allergen bar */
+.header, header.site-header{
+  position: sticky; top:0; z-index: 1000;
+  background: linear-gradient(180deg, rgba(13,17,23,.85) 0%, rgba(13,17,23,.55) 100%);
+  backdrop-filter: blur(10px); border-bottom:1px solid var(--border);
+}
+.header .title, header.site-header .title, h1.page-title{
+  font-family:'Cinzel','Times New Roman',serif; letter-spacing:.16em; text-transform:uppercase; color: var(--ivory);
+}
+.header .title .accent, h1.page-title .accent{ color: var(--gold); }
+
+.allergen-bar, .filters-bar, .top-controls{
+  position: sticky; top: var(--sticky-offset, 54px);
+  display:flex; gap:.5rem; padding:.6rem .9rem; margin:8px auto 0;
+  background: rgba(11,78,67,0.42); backdrop-filter: blur(14px);
+  border: 1px solid rgba(33,150,135,0.45); border-radius: 14px;
+  box-shadow: var(--shadow); max-width: min(1100px, 94vw);
+  transition: transform .32s ease, opacity .32s ease;
+}
+.allergen-bar .chip, .filters-bar .chip, .allergen-toggle, .filter-chip{
+  display:inline-flex; align-items:center; gap:.35rem; padding:.45rem .7rem; border-radius: 999px;
+  border:1px solid var(--border); background: rgba(255,255,255,.03); color: var(--ivory);
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease, transform .15s ease;
+}
+.allergen-bar .chip:hover, .filters-bar .chip:hover, .allergen-toggle:hover, .filter-chip:hover{
+  border-color: color-mix(in srgb, var(--gold) 50%, var(--border)); box-shadow: 0 0 0 2px rgba(212,175,55,.18); transform: translateY(-1px);
+}
+.allergen-bar .chip.active, .allergen-toggle.active, .filter-chip.active{
+  background: rgba(212,175,55,.15); border-color: rgba(212,175,55,.65);
+  box-shadow: 0 0 0 2px rgba(212,175,55,.25), inset 0 0 0 1px rgba(212,175,55,.35);
+}
+
+/* Dish grid + cards */
+.menu, .dish-grid, .cards, .menu-list{ 
+  display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;
+  width: min(1100px, 94vw); margin: 18px auto 72px; 
+}
+.card, .dish-card, .menu-item, .item-card {
+  background: linear-gradient(180deg, rgba(18,24,31,.75), rgba(12,16,21,.75));
+  border: 1px solid var(--border); border-radius: 16px; padding: 14px 14px 12px;
+  box-shadow: var(--shadow);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.card:hover, .dish-card:hover, .menu-item:hover, .item-card:hover{
+  transform: translateY(-2px); border-color: rgba(212,175,55,.35); box-shadow: 0 10px 36px rgba(0,0,0,.45);
+}
+.card h3, .dish-card h3, .menu-item h3, .item-card h3{
+  margin: 0 0 6px; font-size: 1.02rem; font-weight: 600; letter-spacing: .02em; color: var(--ivory);
+  font-family:'Cinzel','Times New Roman',serif;
+}
+.card .subtitle, .dish-card .subtitle, .menu-item .subtitle{ color: var(--muted); font-size:.92rem; margin-bottom:8px; }
+.badges, .allergens, .tags, .meta-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+.badge, .allergen-badge, .tag{
+  background: rgba(255,255,255,.04); border:1px solid var(--border); color: var(--ivory);
+  padding:.28rem .5rem; border-radius: 999px; font-size:.78rem; transition: background .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.badge:hover, .allergen-badge:hover, .tag:hover{ background: rgba(212,175,55,.12); border-color: rgba(212,175,55,.45); box-shadow: 0 0 0 2px rgba(212,175,55,.16); }
+
+.price{ color: var(--gold); font-weight:600; letter-spacing:.04em; }
+
+.section-divider{ width:min(1100px,94vw); margin:18px auto; height:1px; background: linear-gradient(90deg, transparent, rgba(212,175,55,.45), transparent); }
+
+/* Scroll-hide classes */
+.hide-on-scroll{ transform: translateY(-100%); opacity:0; }
+.show-on-scroll{ transform: translateY(0); opacity:1; }
+
+@media (max-width: 680px){
+  .menu, .dish-grid, .cards, .menu-list{ grid-template-columns: 1fr; gap:12px; }
+  .allergen-bar, .filters-bar, .top-controls{ border-radius:12px; }
+}
+
