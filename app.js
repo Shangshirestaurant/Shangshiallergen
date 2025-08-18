@@ -255,21 +255,18 @@ document.addEventListener('DOMContentLoaded', function(){
     if (intro && intro.parentNode) { try { intro.parentNode.removeChild(intro); } catch(e){} }
     if (appContent) appContent.classList.remove('hidden');
   }
-  if (intro){
-    var handler = function(){
+  if (intro && enterBtn){
+    enterBtn.addEventListener('click', function(){
       intro.classList.add('hide');
-      setTimeout(reveal, 500);
-    };
-    if (enterBtn) enterBtn.addEventListener('click', handler, { once:true });
-    // Fallback: click anywhere on the overlay
-    intro.addEventListener('click', function(e){
-      // ignore clicks that start outside the logo? no, accept whole overlay for reliability
-      handler();
+      setTimeout(reveal, 600);
     }, { once:true });
   } else {
     reveal();
   }
 });
+
+
+
 // Scoped scroll fade: header.nav, toolbar (filters), and bottom-sheet if present
 (function(){
   var topEls = [];
@@ -528,7 +525,7 @@ document.addEventListener('applyAllergens', (e) => {
 
 
 
-// Super-harden intro overlay interactions
+// Intro: ensure logo click reveals app
 (function(){
   function ready(fn){ if (document.readyState!=='loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
   ready(function(){
@@ -537,43 +534,71 @@ document.addEventListener('applyAllergens', (e) => {
     var btn   = document.getElementById('enter-btn');
 
     function reveal(){
-      try{
-        if (intro && intro.parentNode){ intro.parentNode.removeChild(intro); }
-        if (app){ app.classList.remove('hidden'); }
-        document.body.classList.remove('intro-active');
-        document.dispatchEvent(new CustomEvent('introHidden', { bubbles:true }));
-      }catch(e){}
+      if (intro && intro.parentNode){ intro.parentNode.removeChild(intro); }
+      if (app){ app.classList.remove('hidden'); }
+      document.body.classList.remove('intro-active');
+      // notify other scripts if they need to recalc layout
+      document.dispatchEvent(new CustomEvent('introHidden', { bubbles:true }));
     }
 
-    if (!intro){ reveal(); return; }
-
-    // make sure the overlay is interactive even if other code messed with it
-    intro.style.pointerEvents = 'auto';
-
-    var handler = function(ev){
-      if (ev) { ev.preventDefault(); ev.stopPropagation(); }
-      intro.classList.add('hide');
-      setTimeout(reveal, 300);
-    };
-
-    // bind multiple event types for reliability across browsers
-    var optsClick = { once:true, capture:true };
-    var optsPointer = { once:true, capture:true };
-    if (btn){
-      btn.addEventListener('pointerdown', handler, optsPointer);
-      btn.addEventListener('click', handler, optsClick);
-      btn.addEventListener('keydown', function(e){
-        if (e.key === 'Enter' || e.key === ' '){ handler(e); }
-      }, { once:true, capture:true });
-    }
-    // fallback: click anywhere on overlay center region
-    intro.addEventListener('pointerdown', handler, optsPointer);
-    intro.addEventListener('click', handler, optsClick);
-
-    // If page is opened with a hash (deep link), auto-dismiss intro then scroll
-    if (location.hash){
-      setTimeout(function(){ handler(); }, 50);
+    if (intro){
+      document.body.classList.add('intro-active');
+      // Click anywhere in the center block or on the button
+      (btn || intro).addEventListener('click', function(){
+        intro.classList.add('hide');
+        setTimeout(reveal, 500);
+      }, { once:true });
+      // Escape key fallback
+      document.addEventListener('keydown', function(e){
+        if (e.key === 'Escape'){ reveal(); }
+      }, { once:true });
+    } else {
+      // If no intro, ensure content is visible
+      if (app){ app.classList.remove('hidden'); }
+      document.body.classList.remove('intro-active');
     }
   });
 })();
+
+
+
+// Intro: make sure clicking the logo (or overlay) enters
+document.addEventListener('DOMContentLoaded', function(){
+  var intro = document.getElementById('intro-screen');
+  var app   = document.getElementById('app-content');
+  var btn   = document.getElementById('enter-btn');
+
+  function reveal(){
+    if (intro && intro.parentNode){ intro.parentNode.removeChild(intro); }
+    if (app){ app.classList.remove('hidden'); }
+    document.body.classList.remove('intro-active');
+    document.dispatchEvent(new CustomEvent('introHidden', { bubbles: true }));
+  }
+
+  if (intro){
+    document.body.classList.add('intro-active');
+    var handle = function(ev){
+      if (ev){ ev.preventDefault(); ev.stopPropagation(); }
+      intro.classList.add('hide');
+      setTimeout(reveal, 350);
+    };
+    if (btn){
+      btn.addEventListener('pointerdown', handle, { once:true, capture:true });
+      btn.addEventListener('click', handle, { once:true, capture:true });
+      btn.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' ') handle(e);
+      }, { once:true, capture:true });
+    }
+    // Fallback: allow tapping anywhere on the overlay to proceed
+    intro.addEventListener('pointerdown', handle, { once:true, capture:true });
+    intro.addEventListener('click', handle, { once:true, capture:true });
+  } else {
+    if (app) app.classList.remove('hidden');
+  }
+
+  // If someone lands on a deep link (e.g., #selector), auto-dismiss the intro
+  if (location.hash && intro){
+    setTimeout(() => intro.dispatchEvent(new Event('click', { bubbles:true })), 50);
+  }
+});
 
