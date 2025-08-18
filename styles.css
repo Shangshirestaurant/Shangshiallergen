@@ -773,3 +773,13 @@ body.intro-active{ overflow:hidden; }
 #intro-screen .intro-logo-img{ display:block; width: clamp(140px, 16vw, 220px); height: clamp(140px, 16vw, 220px); border-radius:999px; object-fit:cover; }
 #intro-screen .intro-hint{ color:#dcdcdc; font-size:.78rem; letter-spacing:.28em; text-transform:uppercase; }
 
+
+
+/* Harden intro overlay clickability */
+#intro-screen{
+  z-index: 2147483647 !important;
+  pointer-events: auto !important;
+}
+#intro-screen *{ pointer-events: auto !important; }
+.intro-logo{ cursor: pointer; touch-action: manipulation; }
+
