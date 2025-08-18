@@ -602,3 +602,60 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 
+
+
+// Global-capture intro handler to guarantee dismissal
+(function(){
+  function ready(fn){ if (document.readyState!=='loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
+  ready(function(){
+    var intro = document.getElementById('intro-screen');
+    var app   = document.getElementById('app-content');
+    var btn   = document.getElementById('enter-btn');
+
+    function reveal(){
+      if (intro && intro.parentNode){ intro.parentNode.removeChild(intro); }
+      if (app){ app.classList.remove('hidden'); }
+      document.body.classList.remove('intro-active');
+      document.dispatchEvent(new CustomEvent('introHidden', { bubbles:true }));
+    }
+
+    // If intro exists, ensure it's the last child of body (topmost stacking context)
+    if (intro && intro.parentNode !== document.body){
+      try{ document.body.appendChild(intro); }catch(e){}
+    }
+
+    if (!intro){ if (app) app.classList.remove('hidden'); return; }
+
+    document.body.classList.add('intro-active');
+
+    var handle = function(ev){
+      if (ev){ ev.preventDefault(); ev.stopPropagation(); }
+      intro.classList.add('hide');
+      setTimeout(reveal, 300);
+    };
+
+    // Bind global capture so nothing can swallow the event
+    document.addEventListener('pointerdown', function(e){
+      if (intro && intro.contains(e.target)) handle(e);
+    }, { capture:true });
+    document.addEventListener('click', function(e){
+      if (intro && intro.contains(e.target)) handle(e);
+    }, { capture:true });
+    document.addEventListener('keydown', function(e){
+      if (!intro) return;
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape'){ handle(e); }
+    }, { capture:true });
+
+    // Also bind directly on button (no harm)
+    if (btn){
+      btn.addEventListener('pointerdown', handle, { once:true, capture:true });
+      btn.addEventListener('click', handle, { once:true, capture:true });
+    }
+
+    // Auto-dismiss if deep link present
+    if (location.hash){
+      setTimeout(function(){ try{ handle(new Event('click')); }catch(e){} }, 50);
+    }
+  });
+})();
+
