@@ -562,7 +562,7 @@ document.addEventListener('applyAllergens', (e) => {
 
 
 
-// Intro: make sure clicking the logo (or overlay) enters
+// Intro: only the logo acts as the enter button
 document.addEventListener('DOMContentLoaded', function(){
   var intro = document.getElementById('intro-screen');
   var app   = document.getElementById('app-content');
@@ -572,90 +572,25 @@ document.addEventListener('DOMContentLoaded', function(){
     if (intro && intro.parentNode){ intro.parentNode.removeChild(intro); }
     if (app){ app.classList.remove('hidden'); }
     document.body.classList.remove('intro-active');
-    document.dispatchEvent(new CustomEvent('introHidden', { bubbles: true }));
+    document.dispatchEvent(new CustomEvent('introHidden', { bubbles:true }));
   }
 
   if (intro){
     document.body.classList.add('intro-active');
-    var handle = function(ev){
-      if (ev){ ev.preventDefault(); ev.stopPropagation(); }
-      intro.classList.add('hide');
-      setTimeout(reveal, 350);
-    };
     if (btn){
+      var handle = function(ev){
+        if (ev){ ev.preventDefault(); ev.stopPropagation(); }
+        intro.classList.add('hide');
+        setTimeout(reveal, 350);
+      };
       btn.addEventListener('pointerdown', handle, { once:true, capture:true });
       btn.addEventListener('click', handle, { once:true, capture:true });
       btn.addEventListener('keydown', function(e){
         if (e.key === 'Enter' || e.key === ' ') handle(e);
       }, { once:true, capture:true });
     }
-    // Fallback: allow tapping anywhere on the overlay to proceed
-    intro.addEventListener('pointerdown', handle, { once:true, capture:true });
-    intro.addEventListener('click', handle, { once:true, capture:true });
   } else {
     if (app) app.classList.remove('hidden');
   }
-
-  // If someone lands on a deep link (e.g., #selector), auto-dismiss the intro
-  if (location.hash && intro){
-    setTimeout(() => intro.dispatchEvent(new Event('click', { bubbles:true })), 50);
-  }
 });
-
-
-
-// Global-capture intro handler to guarantee dismissal
-(function(){
-  function ready(fn){ if (document.readyState!=='loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
-  ready(function(){
-    var intro = document.getElementById('intro-screen');
-    var app   = document.getElementById('app-content');
-    var btn   = document.getElementById('enter-btn');
-
-    function reveal(){
-      if (intro && intro.parentNode){ intro.parentNode.removeChild(intro); }
-      if (app){ app.classList.remove('hidden'); }
-      document.body.classList.remove('intro-active');
-      document.dispatchEvent(new CustomEvent('introHidden', { bubbles:true }));
-    }
-
-    // If intro exists, ensure it's the last child of body (topmost stacking context)
-    if (intro && intro.parentNode !== document.body){
-      try{ document.body.appendChild(intro); }catch(e){}
-    }
-
-    if (!intro){ if (app) app.classList.remove('hidden'); return; }
-
-    document.body.classList.add('intro-active');
-
-    var handle = function(ev){
-      if (ev){ ev.preventDefault(); ev.stopPropagation(); }
-      intro.classList.add('hide');
-      setTimeout(reveal, 300);
-    };
-
-    // Bind global capture so nothing can swallow the event
-    document.addEventListener('pointerdown', function(e){
-      if (intro && intro.contains(e.target)) handle(e);
-    }, { capture:true });
-    document.addEventListener('click', function(e){
-      if (intro && intro.contains(e.target)) handle(e);
-    }, { capture:true });
-    document.addEventListener('keydown', function(e){
-      if (!intro) return;
-      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape'){ handle(e); }
-    }, { capture:true });
-
-    // Also bind directly on button (no harm)
-    if (btn){
-      btn.addEventListener('pointerdown', handle, { once:true, capture:true });
-      btn.addEventListener('click', handle, { once:true, capture:true });
-    }
-
-    // Auto-dismiss if deep link present
-    if (location.hash){
-      setTimeout(function(){ try{ handle(new Event('click')); }catch(e){} }, 50);
-    }
-  });
-})();
 
