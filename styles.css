@@ -319,35 +319,6 @@ html, body{height:100%; -webkit-text-size-adjust:100%;}
 body{min-height:100dvh; min-height:-webkit-fill-available;}
 :root{ --gold:#D4AF37; --ivory:#F5F2E9; }
 
-/* ===== Intro overlay ===== */
-#app-content.hidden{display:none;}
-#intro-screen{
-  position:fixed; inset:0; z-index:2147483647;
-  display:flex; align-items:center; justify-content:center; text-align:center;
-  background: radial-gradient(120% 70% at 50% 0%, #0b0f14 0%, #02140e 45%, #000 100%);
-  opacity:1; visibility:visible; transition: opacity .6s ease, visibility .6s ease;
-  height:100dvh; height:100svh; min-height:-webkit-fill-available;
-  padding-top:env(safe-area-inset-top); padding-bottom:env(safe-area-inset-bottom);
-}
-#intro-screen.hide{opacity:0; visibility:hidden;}
-.intro-title{
-  font-family: 'Cinzel','Times New Roman',serif; color:#fff; font-weight:600;
-  font-size: clamp(28px,5vw,56px); letter-spacing:.28em; text-transform:uppercase;
-  margin:0 0 28px; text-shadow:0 2px 12px rgba(212,175,55,.25);
-}
-.intro-logo{width:176px; height:176px; border-radius:999px; position:relative; border:0; background:transparent; padding:0;
-  cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
-.intro-logo::before{content:""; position:absolute; inset:-24px; border-radius:999px;
-  background: radial-gradient(60% 60% at 50% 50%, rgba(212,175,55,.45), rgba(212,175,55,.10) 42%, transparent 70%);
-  filter:blur(18px);}
-.intro-logo img{width:100%; height:100%; border-radius:999px; object-fit:cover;
-  box-shadow:0 12px 32px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.06);}
-.intro-logo.fallback{ background: radial-gradient(120% 120% at 30% 20%, #F5E6A8 0%, #D4AF37 55%, #A0771B 100%); }
-.intro-logo.fallback::after{
-  content:"S"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-  font-family:'Cinzel','Times New Roman',serif; font-size:64px; color:#0B0F14; letter-spacing:.02em; border-radius:999px;}
-.intro-hint{ margin-top:10px; color:#c8c8c8; font-size:.8rem; letter-spacing:.3em; text-transform:uppercase; }
-
 /* ===== Glass header with centered floating logo ===== */
 header.nav.glass{
   position:sticky; top:0; z-index:1000;
@@ -385,56 +356,9 @@ header.nav .nav-right{justify-self:end; display:flex; gap:.4rem;}
 
 
 /* Intro logo dual-source: element background + <img> */
-#intro-screen .intro-logo{
-  width: clamp(140px, 16vw, 220px);
-  height: clamp(140px, 16vw, 220px);
-  border:0; padding:0; cursor:pointer; border-radius:999px;
-  display:inline-flex; align-items:center; justify-content:center; position:relative; isolation:isolate;
-  background-size: cover; background-position: center; background-repeat: no-repeat;
-}
-#intro-screen .intro-logo-img{
-  width:100%; height:100%; object-fit:cover; border-radius:999px; display:block;
-  box-shadow:0 10px 24px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.06);
-}
-#intro-screen .intro-logo::before{
-  content:""; position:absolute; inset:-28px; border-radius:999px; z-index:-1;
-  background: radial-gradient(60% 60% at 50% 50%, rgba(212,175,55,.55) 0%, rgba(212,175,55,.12) 45%, transparent 75%);
-  filter: blur(22px);
-}
 
 
 
-/* === Intro Overlay: fullscreen, glow behind logo, iOS-safe === */
-#app-content.hidden{ display:none; }
-body.intro-active{ overflow:hidden; }
-#intro-screen{
-  position:fixed; inset:0; z-index:2147483647;
-  display:flex; align-items:center; justify-content:center; text-align:center;
-  background: radial-gradient(120% 70% at 50% 0%, #0b0f14 0%, #02140e 45%, #000 100%);
-  opacity:1; visibility:visible; transition: opacity .5s ease, visibility .5s ease;
-  height:100dvh; height:100svh; min-height:-webkit-fill-available;
-  padding-top:env(safe-area-inset-top); padding-bottom:env(safe-area-inset-bottom);
-}
-#intro-screen.hide{ opacity:0; visibility:hidden; }
-#intro-screen .intro-content{ position:relative; display:flex; flex-direction:column; align-items:center; gap:10px; }
-#intro-screen .intro-logo{
-  width: clamp(140px, 16vw, 220px); height: clamp(140px, 16vw, 220px);
-  border:0; padding:0; cursor:pointer; border-radius:999px;
-  display:inline-flex; align-items:center; justify-content:center; position:relative; isolation:isolate;
-  background-size: cover; background-position: center; background-repeat: no-repeat;
-  animation: introFloat 4.8s ease-in-out infinite alternate;
-}
-#intro-screen .intro-logo::before{
-  content:""; position:absolute; inset:-28px; border-radius:999px; z-index:-1;
-  background: radial-gradient(60% 60% at 50% 50%, rgba(212,175,55,.55) 0%, rgba(212,175,55,.12) 45%, transparent 75%);
-  filter: blur(22px);
-}
-#intro-screen .intro-logo-img{
-  width:100%; height:100%; object-fit:cover; border-radius:999px; display:block;
-  box-shadow:0 10px 24px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.06);
-}
-#intro-screen .intro-hint{ color:#dcdcdc; font-size:.78rem; letter-spacing:.28em; text-transform:uppercase; }
-@keyframes introFloat{ from{ transform:translateY(0) } to{ transform:translateY(-4px) } }
 
 
 
@@ -516,26 +440,6 @@ header.nav .nav-logo{
 @media (min-width:834px){ header.nav .nav-logo{ width:64px; height:64px; }  :root{ --logo-y-offset: -14px; } header.nav .nav-logo{ width:56px; height:56px; } }
 @media (max-width:360px){ :root{ --logo-y-offset: -14px; } }
 
-/* === Intro Overlay: fullscreen with glow === */
-#app-content.hidden{ display:none; } body.intro-active{ overflow:hidden; }
-#intro-screen{ position:fixed; inset:0; z-index:2147483647; display:flex; align-items:center; justify-content:center; text-align:center;
-  background: radial-gradient(120% 70% at 50% 0%, #0b0f14 0%, #02140e 45%, #000 100%);
-  opacity:1; visibility:visible; transition: opacity .5s ease, visibility .5s ease;
-  height:100dvh; height:100svh; min-height:-webkit-fill-available;
-  padding-top:env(safe-area-inset-top); padding-bottom:env(safe-area-inset-bottom); }
-#intro-screen.hide{ opacity:0; visibility:hidden; }
-#intro-screen .intro-content{ position:relative; display:flex; flex-direction:column; align-items:center; gap:10px; }
-#intro-screen .intro-logo{ width: clamp(140px, 16vw, 220px); height: clamp(140px, 16vw, 220px);
-  border:0; padding:0; cursor:pointer; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; position:relative; isolation:isolate;
-  background-size: cover; background-position: center; background-repeat: no-repeat; animation: introFloat 4.8s ease-in-out infinite alternate; }
-#intro-screen .intro-logo::before{ content:""; position:absolute; inset:-28px; border-radius:999px; z-index:-1;
-  background: radial-gradient(60% 60% at 50% 50%, rgba(212,175,55,.55) 0%, rgba(212,175,55,.12) 45%, transparent 75%); filter: blur(22px); }
-#intro-screen .intro-logo-img{ width:100%; height:100%; object-fit:cover; border-radius:999px; display:block;
-  box-shadow:0 10px 24px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.06); }
-#intro-screen .intro-hint{ color:#dcdcdc; font-size:.78rem; letter-spacing:.28em; text-transform:uppercase; }
-@keyframes introFloat{ from{ transform:translateY(0) } to{ transform:translateY(-4px) } }
-
-
 /* hard center stickyPanel wrapper */
 #stickyPanel{ left:50% !important; right:auto !important; transform:translateX(-50%) !important; }
 
@@ -546,21 +450,7 @@ header.nav .nav-logo{
   left: 50%;
   transform: translateX(-50%);
   bottom: max(12px, env(safe-area-inset-bottom) + 12px);
-  z-index: 1200; /* intro overlay uses much higher z; this sits below it */
-  display: block;
-  width: 100%;
-  max-width: min(980px, calc(100% - 32px));
-}
-#stickyPanel .cta-btn{
-  display:block; width:100%;
-  padding:14px 18px;
-  border-radius:14px; border:1px solid rgba(0,0,0,.08);
-  background: rgba(255,255,255,.92);
-  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-  box-shadow: 0 18px 40px rgba(0,0,0,.18);
-  font-weight:600; letter-spacing:.02em;
-}
-/* Ensure it's not hidden by any scroll-hide classes from older builds */
+  z-index: 1200; /* Ensure it's not hidden by any scroll-hide classes from older builds */
 #stickyPanel.hide-on-scroll-bottom{ opacity:1 !important; transform: translateX(-50%) !important; }
 #stickyPanel.show-on-scroll-bottom{ opacity:1 !important; transform: translateX(-50%) !important; }
 
@@ -758,18 +648,11 @@ html[data-theme="dark"] .preset-btn{
 
 
 
-/* Intro overlay (clickable logo) */
-#app-content.hidden{ display:none; }
-body.intro-active{ overflow:hidden; }
-#intro-screen{
-  position:fixed; inset:0; z-index:2147483647;
-  display:flex; align-items:center; justify-content:center; text-align:center;
-  background: radial-gradient(120% 70% at 50% 0%, #0b0f14 0%, #02140e 45%, #000 100%);
-  opacity:1; visibility:visible; transition: opacity .5s ease, visibility .5s ease;
+/* entire overlay is tappable */
+  pointer-events: auto !important;
 }
-#intro-screen.hide{ opacity:0; visibility:hidden; }
-#intro-screen .intro-content{ position:relative; display:flex; flex-direction:column; align-items:center; gap:10px; }
-#intro-screen .intro-logo{ cursor:pointer; border:0; background:transparent; }
-#intro-screen .intro-logo-img{ display:block; width: clamp(140px, 16vw, 220px); height: clamp(140px, 16vw, 220px); border-radius:999px; object-fit:cover; }
-#intro-screen .intro-hint{ color:#dcdcdc; font-size:.78rem; letter-spacing:.28em; text-transform:uppercase; }
+
+
+
+
 

@@ -246,57 +246,6 @@ load();
 
 
 
-// Intro overlay: always show until user taps Enter (iOS-safe)
-document.addEventListener('DOMContentLoaded', function(){
-  var intro = document.getElementById('intro-screen');
-  var enterBtn = document.getElementById('enter-btn');
-  var appContent = document.getElementById('app-content');
-  function reveal(){
-    if (intro && intro.parentNode) { try { intro.parentNode.removeChild(intro); } catch(e){} }
-    if (appContent) appContent.classList.remove('hidden');
-  }
-  if (intro && enterBtn){
-    enterBtn.addEventListener('click', function(){
-      intro.classList.add('hide');
-      setTimeout(reveal, 600);
-    }, { once:true });
-  } else {
-    reveal();
-  }
-});
-
-
-
-// Scoped scroll fade: header.nav, toolbar (filters), and bottom-sheet if present
-(function(){
-  var topEls = [];
-  var header = document.querySelector('header.nav'); if (header) topEls.push(header);
-  var toolbar = document.querySelector('.toolbar, .allergen-bar, .filters-bar, .top-controls'); if (toolbar) topEls.push(toolbar);
-
-  var bottomEls = [];
-  var sticky = document.getElementById('stickyPanel'); if (sticky) bottomEls.push(sticky);
-  var sheet = document.querySelector('.bottom-sheet'); if (sheet) bottomEls.push(sheet);
-
-  topEls.forEach(function(el){ el.classList.add('show-on-scroll'); });
-  bottomEls.forEach(function(el){ el.classList.add('show-on-scroll-bottom'); });
-
-  var lastY = window.scrollY || 0, ticking = false;
-  function onScroll(){
-    var y = window.scrollY || 0;
-    var down = y > lastY + 6, up = y < lastY - 6;
-    if (down){
-      topEls.forEach(el => { el.classList.remove('show-on-scroll'); el.classList.add('hide-on-scroll'); });
-      bottomEls.forEach(el => { el.classList.remove('show-on-scroll-bottom'); el.classList.add('hide-on-scroll-bottom'); });
-    } else if (up){
-      topEls.forEach(el => { el.classList.remove('hide-on-scroll'); el.classList.add('show-on-scroll'); });
-      bottomEls.forEach(el => { el.classList.remove('hide-on-scroll-bottom'); el.classList.add('show-on-scroll-bottom'); });
-    }
-    lastY = y; ticking = false;
-  }
-  window.addEventListener('scroll', function(){ if (!ticking){ requestAnimationFrame(onScroll); ticking = true; } }, { passive:true });
-})();
-
-
 // Ensure intro logo element also has a CSS background as fallback
 document.addEventListener('DOMContentLoaded', function(){
   var logoBtn = document.querySelector('#intro-screen .intro-logo');
@@ -306,59 +255,6 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 
 
-
-// Intro overlay: show every load; logo acts as button (logo.jpg?v=20250818_logoJPG_introGlow_fullscreen_zipfix)
-document.addEventListener('DOMContentLoaded', function(){
-  var intro = document.getElementById('intro-screen');
-  var app   = document.getElementById('app-content');
-  var btn   = document.getElementById('enter-btn');
-  function reveal(){
-    if (intro && intro.parentNode) intro.parentNode.removeChild(intro);
-    if (app) app.classList.remove('hidden');
-    document.body.classList.remove('intro-active');
-  }
-  if (intro){
-    document.body.classList.add('intro-active');
-    // ensure CSS background fallback applied
-    var logoBtn = document.querySelector('#intro-screen .intro-logo');
-    if (logoBtn){ logoBtn.style.backgroundImage = 'url("logo.jpg?v=20250818_logoJPG_introGlow_fullscreen_zipfix")'; }
-    (btn || intro).addEventListener('click', function(){
-      intro.classList.add('hide');
-      setTimeout(reveal, 500);
-    }, { once:true });
-  } else {
-    reveal();
-  }
-});
-
-
-
-// Scoped scroll fade only for header + stickyPanel
-(function(){
-  var topEls = [];
-  var header = document.querySelector('header.nav'); if (header) topEls.push(header);
-
-  var bottomEls = [];
-  var sticky = document.getElementById('stickyPanel'); if (sticky) bottomEls.push(sticky);
-
-  topEls.forEach(el => el.classList.add('show-on-scroll'));
-  bottomEls.forEach(el => el.classList.add('show-on-scroll-bottom'));
-
-  var lastY = window.scrollY || 0, ticking = false;
-  function onScroll(){
-    var y = window.scrollY || 0;
-    var down = y > lastY + 6, up = y < lastY - 6;
-    if (down){
-      topEls.forEach(el => { el.classList.remove('show-on-scroll'); el.classList.add('hide-on-scroll'); });
-      bottomEls.forEach(el => { el.classList.remove('show-on-scroll-bottom'); el.classList.add('hide-on-scroll-bottom'); });
-    } else if (up){
-      topEls.forEach(el => { el.classList.remove('hide-on-scroll'); el.classList.add('show-on-scroll'); });
-      bottomEls.forEach(el => { el.classList.remove('hide-on-scroll-bottom'); el.classList.add('show-on-scroll-bottom'); });
-    }
-    lastY = y; ticking = false;
-  }
-  window.addEventListener('scroll', function(){ if(!ticking){ requestAnimationFrame(onScroll); ticking = true; } }, { passive:true });
-})();
 
 document.addEventListener('click', function(e){
   var btn = e.target.closest('#stickyPanel .cta-btn');
@@ -525,30 +421,7 @@ document.addEventListener('applyAllergens', (e) => {
 
 
 
-// Intro: ensure logo click reveals app
-(function(){
-  function ready(fn){ if (document.readyState!=='loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
-  ready(function(){
-    var intro = document.getElementById('intro-screen');
-    var app   = document.getElementById('app-content');
-    var btn   = document.getElementById('enter-btn');
-
-    function reveal(){
-      if (intro && intro.parentNode){ intro.parentNode.removeChild(intro); }
-      if (app){ app.classList.remove('hidden'); }
-      document.body.classList.remove('intro-active');
-      // notify other scripts if they need to recalc layout
-      document.dispatchEvent(new CustomEvent('introHidden', { bubbles:true }));
-    }
-
-    if (intro){
-      document.body.classList.add('intro-active');
-      // Click anywhere in the center block or on the button
-      (btn || intro).addEventListener('click', function(){
-        intro.classList.add('hide');
-        setTimeout(reveal, 500);
-      }, { once:true });
-      // Escape key fallback
+// Escape key fallback
       document.addEventListener('keydown', function(e){
         if (e.key === 'Escape'){ reveal(); }
       }, { once:true });
@@ -559,4 +432,26 @@ document.addEventListener('applyAllergens', (e) => {
     }
   });
 })();
+
+
+
+btn.addEventListener('click', handle, { once:true, capture:true });
+      btn.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' ') handle(e);
+      }, { once:true, capture:true });
+    }
+    // Fallback: allow tapping anywhere on the overlay to proceed
+    intro.addEventListener('pointerdown', handle, { once:true, capture:true });
+    intro.addEventListener('click', handle, { once:true, capture:true });
+  } else {
+    if (app) app.classList.remove('hidden');
+  }
+
+  // If someone lands on a deep link (e.g., #selector), auto-dismiss the intro
+  if (location.hash && intro){
+    setTimeout(() => intro.dispatchEvent(new Event('click', { bubbles:true })), 50);
+  }
+});
+
+
 
