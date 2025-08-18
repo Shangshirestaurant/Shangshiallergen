@@ -619,4 +619,25 @@ header.nav.hide-on-scroll{
   box-shadow: 0 18px 40px rgba(0,0,0,.18);
   font-weight:600; letter-spacing:.02em;
 }
+/* Dark mode: transparent header, keep the blur */
+@media (prefers-color-scheme: dark) {
+  .nav {
+    background: rgba(0,0,0,0.001) !important; /* visually transparent, triggers blur */
+    backdrop-filter: blur(16px) saturate(120%);
+    -webkit-backdrop-filter: blur(16px) saturate(120%);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .nav .mini {
+    border-color: rgba(255,255,255,0.12);
+  }
+}
+
+/* If you’re toggling dark mode via a .dark class instead of system setting */
+.dark .nav {
+  background: rgba(0,0,0,0.001) !important;
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
 
