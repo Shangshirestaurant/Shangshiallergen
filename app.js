@@ -1,12 +1,4 @@
-
-// Force dark mode on load
-document.addEventListener('DOMContentLoaded', function(){
-  var root = document.documentElement;
-  root.classList.add('dark');
-  root.setAttribute('data-theme','dark');
-  try{ localStorage.setItem('theme','dark'); }catch(e){}
-});
-\nconst state = { allergens: [], menu: [], selected: new Set(), mode: 'safe', q: '', ingQ: '', lang: 'en' };
+const state = { allergens: [], menu: [], selected: new Set(), mode: 'safe', q: '', ingQ: '', lang: 'en' };
 
 /* --- i18n --- */
 const I18N = {"en": {"hero_title": "Shang Shi FOH Allegern Selector", "hero_body": "Tick allergens, see safe dishes instantly.", "open_selector": "Open selector", "ingredients": "Ingredients", "select_allergens": "Select allergens", "mode_safe": "SAFE (exclude)", "mode_contains": "CONTAINS", "search_dishes": "Search dishes\u2026", "search_ingredients": "Search by ingredient\u2026", "search_dishes_or_ing": "Search dishes or ingredients\u2026", "disclaimer": "\u26a0\ufe0f Chef must verify codes before FOH use.", "no_matches": "No dishes match your filters.", "clear": "Clear", "back": "Back", "preset_glutenfree": "Gluten\u2011free", "preset_dairyfree": "Dairy\u2011free", "preset_nutfree": "Nut\u2011free"}, "et": {"hero_title": "Allergeenide kontroll kiireks teeninduseks", "hero_body": "M\u00e4rgi allergeenid ja n\u00e4e kohe sobivaid roogasid. M\u00f5eldud iPhone\u2019i/iPadi ja kiireks suhtluseks.", "open_selector": "Ava valik", "ingredients": "Koostisosad", "select_allergens": "Vali allergeenid", "mode_safe": "TURVALISED (v\u00e4lista)", "mode_contains": "SISALDAB", "search_dishes": "Otsi roogasid\u2026", "search_ingredients": "Otsi koostisosade j\u00e4rgi\u2026", "search_dishes_or_ing": "Otsi roogi v\u00f5i koostisosi\u2026", "disclaimer": "\u26a0\ufe0f Kokk peab koodid FOH jaoks kinnitama.", "no_matches": "Sinu filtritega roogasid ei leitud.", "clear": "T\u00fchjenda", "back": "Tagasi", "preset_glutenfree": "Gluteenivaba", "preset_dairyfree": "Laktoosivaba", "preset_nutfree": "P\u00e4hklivaba"}};
@@ -246,6 +238,57 @@ load();
 
 
 
+// Intro overlay: always show until user taps Enter (iOS-safe)
+document.addEventListener('DOMContentLoaded', function(){
+  var intro = document.getElementById('intro-screen');
+  var enterBtn = document.getElementById('enter-btn');
+  var appContent = document.getElementById('app-content');
+  function reveal(){
+    if (intro && intro.parentNode) { try { intro.parentNode.removeChild(intro); } catch(e){} }
+    if (appContent) appContent.classList.remove('hidden');
+  }
+  if (intro && enterBtn){
+    enterBtn.addEventListener('click', function(){
+      intro.classList.add('hide');
+      setTimeout(reveal, 600);
+    }, { once:true });
+  } else {
+    reveal();
+  }
+});
+
+
+
+// Scoped scroll fade: header.nav, toolbar (filters), and bottom-sheet if present
+(function(){
+  var topEls = [];
+  var header = document.querySelector('header.nav'); if (header) topEls.push(header);
+  var toolbar = document.querySelector('.toolbar, .allergen-bar, .filters-bar, .top-controls'); if (toolbar) topEls.push(toolbar);
+
+  var bottomEls = [];
+  var sticky = document.getElementById('stickyPanel'); if (sticky) bottomEls.push(sticky);
+  var sheet = document.querySelector('.bottom-sheet'); if (sheet) bottomEls.push(sheet);
+
+  topEls.forEach(function(el){ el.classList.add('show-on-scroll'); });
+  bottomEls.forEach(function(el){ el.classList.add('show-on-scroll-bottom'); });
+
+  var lastY = window.scrollY || 0, ticking = false;
+  function onScroll(){
+    var y = window.scrollY || 0;
+    var down = y > lastY + 6, up = y < lastY - 6;
+    if (down){
+      topEls.forEach(el => { el.classList.remove('show-on-scroll'); el.classList.add('hide-on-scroll'); });
+      bottomEls.forEach(el => { el.classList.remove('show-on-scroll-bottom'); el.classList.add('hide-on-scroll-bottom'); });
+    } else if (up){
+      topEls.forEach(el => { el.classList.remove('hide-on-scroll'); el.classList.add('show-on-scroll'); });
+      bottomEls.forEach(el => { el.classList.remove('hide-on-scroll-bottom'); el.classList.add('show-on-scroll-bottom'); });
+    }
+    lastY = y; ticking = false;
+  }
+  window.addEventListener('scroll', function(){ if (!ticking){ requestAnimationFrame(onScroll); ticking = true; } }, { passive:true });
+})();
+
+
 // Ensure intro logo element also has a CSS background as fallback
 document.addEventListener('DOMContentLoaded', function(){
   var logoBtn = document.querySelector('#intro-screen .intro-logo');
@@ -255,6 +298,59 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 
 
+
+// Intro overlay: show every load; logo acts as button (logo.jpg?v=20250818_logoJPG_introGlow_fullscreen_zipfix)
+document.addEventListener('DOMContentLoaded', function(){
+  var intro = document.getElementById('intro-screen');
+  var app   = document.getElementById('app-content');
+  var btn   = document.getElementById('enter-btn');
+  function reveal(){
+    if (intro && intro.parentNode) intro.parentNode.removeChild(intro);
+    if (app) app.classList.remove('hidden');
+    document.body.classList.remove('intro-active');
+  }
+  if (intro){
+    document.body.classList.add('intro-active');
+    // ensure CSS background fallback applied
+    var logoBtn = document.querySelector('#intro-screen .intro-logo');
+    if (logoBtn){ logoBtn.style.backgroundImage = 'url("logo.jpg?v=20250818_logoJPG_introGlow_fullscreen_zipfix")'; }
+    (btn || intro).addEventListener('click', function(){
+      intro.classList.add('hide');
+      setTimeout(reveal, 500);
+    }, { once:true });
+  } else {
+    reveal();
+  }
+});
+
+
+
+// Scoped scroll fade only for header + stickyPanel
+(function(){
+  var topEls = [];
+  var header = document.querySelector('header.nav'); if (header) topEls.push(header);
+
+  var bottomEls = [];
+  var sticky = document.getElementById('stickyPanel'); if (sticky) bottomEls.push(sticky);
+
+  topEls.forEach(el => el.classList.add('show-on-scroll'));
+  bottomEls.forEach(el => el.classList.add('show-on-scroll-bottom'));
+
+  var lastY = window.scrollY || 0, ticking = false;
+  function onScroll(){
+    var y = window.scrollY || 0;
+    var down = y > lastY + 6, up = y < lastY - 6;
+    if (down){
+      topEls.forEach(el => { el.classList.remove('show-on-scroll'); el.classList.add('hide-on-scroll'); });
+      bottomEls.forEach(el => { el.classList.remove('show-on-scroll-bottom'); el.classList.add('hide-on-scroll-bottom'); });
+    } else if (up){
+      topEls.forEach(el => { el.classList.remove('hide-on-scroll'); el.classList.add('show-on-scroll'); });
+      bottomEls.forEach(el => { el.classList.remove('hide-on-scroll-bottom'); el.classList.add('show-on-scroll-bottom'); });
+    }
+    lastY = y; ticking = false;
+  }
+  window.addEventListener('scroll', function(){ if(!ticking){ requestAnimationFrame(onScroll); ticking = true; } }, { passive:true });
+})();
 
 document.addEventListener('click', function(e){
   var btn = e.target.closest('#stickyPanel .cta-btn');
@@ -311,147 +407,4 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }catch(e){/* noop */}
 })();
-
-\n
-// Back-to-top behavior
-(function(){
-  function ready(fn){ if (document.readyState !== 'loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
-  ready(function(){
-    var btn = document.getElementById('backToTop');
-    if (!btn) return;
-    btn.style.pointerEvents = 'auto';
-    var ticking = false;
-    function onScroll(){
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(function(){
-        var y = window.pageYOffset || document.documentElement.scrollTop || 0;
-        if (y > 300) btn.classList.add('show'); else btn.classList.remove('show');
-        ticking = false;
-      });
-    }
-    window.addEventListener('scroll', onScroll, { passive:true });
-    onScroll();
-    btn.addEventListener('click', function(){
-      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      window.scrollTo({ top:0, behavior: reduced ? 'auto' : 'smooth' });
-    });
-  });
-})();
-\n
-
-// ----- Quick Preset Filters (Gluten-free, Nut-free, etc.) -----
-document.addEventListener('DOMContentLoaded', () => {
-  const bar = document.getElementById('presetBar');
-  if (!bar) return;
-
-  // Allergen keys (adjust to match your allergens.json keys)
-  const A = {
-    gluten: 'gluten',
-    peanuts: 'peanuts',
-    treenuts: 'tree_nuts',
-    dairy: 'dairy',
-    eggs: 'eggs',
-    fish: 'fish',
-    shellfish: 'shellfish',
-    soy: 'soy',
-    sesame: 'sesame',
-  };
-
-  const PRESETS = [
-    { id: 'gf',    label: 'Gluten-free',     exclude: [A.gluten] },
-    { id: 'nf',    label: 'Nut-free',        exclude: [A.peanuts, A.treenuts, A.sesame] },
-    { id: 'df',    label: 'Dairy-free',      exclude: [A.dairy] },
-    { id: 'ef',    label: 'Egg-free',        exclude: [A.eggs] },
-    { id: 'shell', label: 'Shellfish-free',  exclude: [A.shellfish] },
-    { id: 'soyf',  label: 'Soy-free',        exclude: [A.soy] },
-    { id: 'fishf', label:'Fish-free',        exclude: [A.fish] },
-  ];
-
-  // Render preset buttons
-  bar.innerHTML = PRESETS.map(p => 
-    `<button class="preset-btn" type="button" data-id="${p.id}">${p.label}</button>`
-  ).join('');
-
-  const btns = Array.from(bar.querySelectorAll('.preset-btn'));
-
-  function applyPreset(preset){
-    const excludeSet = new Set(preset.exclude);
-
-    // Integration path A: native globals
-    let integrated = false;
-    try {
-      if (window.selectedAllergens instanceof Set && typeof window.renderMenu === 'function') {
-        window.selectedAllergens.clear();
-        excludeSet.forEach(a => window.selectedAllergens.add(a));
-        window.renderMenu();
-        integrated = true;
-      }
-    } catch(e){}
-
-    // Integration path B: broadcast an event for your existing filter logic
-    if (!integrated){
-      document.dispatchEvent(new CustomEvent('applyAllergens', {
-        detail: { include: new Set(), exclude: excludeSet }
-      }));
-    }
-
-    // Visual state + persistence
-    btns.forEach(b => b.classList.toggle('active', b.dataset.id === preset.id));
-    try { localStorage.setItem('lastPreset', preset.id); } catch(e){}
-  }
-
-  // Wire click handlers
-  btns.forEach(b => b.addEventListener('click', () => {
-    const preset = PRESETS.find(p => p.id === b.dataset.id);
-    if (preset) applyPreset(preset);
-  }));
-
-  // Restore last preset on load
-  const last = (localStorage.getItem('lastPreset') || '').trim();
-  const start = PRESETS.find(p => p.id === last);
-  if (start) applyPreset(start);
-});
-
-// Example listener for apps that prefer event-based integration:
-document.addEventListener('applyAllergens', (e) => {
-  // If your code is checkbox-based, update your UI here and call render.
-  // This is a placeholder hook — keep if needed, or remove if you use Set+renderMenu path.
-});
-
-
-
-// Escape key fallback
-      document.addEventListener('keydown', function(e){
-        if (e.key === 'Escape'){ reveal(); }
-      }, { once:true });
-    } else {
-      // If no intro, ensure content is visible
-      if (app){ app.classList.remove('hidden'); }
-      document.body.classList.remove('intro-active');
-    }
-  });
-})();
-
-
-
-btn.addEventListener('click', handle, { once:true, capture:true });
-      btn.addEventListener('keydown', function(e){
-        if (e.key === 'Enter' || e.key === ' ') handle(e);
-      }, { once:true, capture:true });
-    }
-    // Fallback: allow tapping anywhere on the overlay to proceed
-    intro.addEventListener('pointerdown', handle, { once:true, capture:true });
-    intro.addEventListener('click', handle, { once:true, capture:true });
-  } else {
-    if (app) app.classList.remove('hidden');
-  }
-
-  // If someone lands on a deep link (e.g., #selector), auto-dismiss the intro
-  if (location.hash && intro){
-    setTimeout(() => intro.dispatchEvent(new Event('click', { bubbles:true })), 50);
-  }
-});
-
-
 
