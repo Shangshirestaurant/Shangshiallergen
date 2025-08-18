@@ -641,3 +641,32 @@ header.nav.hide-on-scroll{
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
+
+
+/* Force header logo bottom aligned */
+
+.brand img {
+  margin-top: auto;
+  margin-bottom: 0;
+  align-self: flex-end;
+}
+
+
+/* === Dark mode: transparent but blurred header === */
+html[data-theme="dark"] .nav {
+  background: rgba(0,0,0,0.001) !important; /* visually transparent, enables blur on iOS */
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* === Bottom-align the header logo within the brand area === */
+.brand{
+  display:flex;
+  align-items:flex-end; /* anchor contents to bottom of header line */
+}
+.brand img{
+  position: relative;
+  top: 8px;             /* nudge downward; tweak 6–12px if needed */
+}
+
