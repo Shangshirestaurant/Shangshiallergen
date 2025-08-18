@@ -523,3 +523,40 @@ document.addEventListener('applyAllergens', (e) => {
   // This is a placeholder hook — keep if needed, or remove if you use Set+renderMenu path.
 });
 
+
+
+// Intro: ensure logo click reveals app
+(function(){
+  function ready(fn){ if (document.readyState!=='loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
+  ready(function(){
+    var intro = document.getElementById('intro-screen');
+    var app   = document.getElementById('app-content');
+    var btn   = document.getElementById('enter-btn');
+
+    function reveal(){
+      if (intro && intro.parentNode){ intro.parentNode.removeChild(intro); }
+      if (app){ app.classList.remove('hidden'); }
+      document.body.classList.remove('intro-active');
+      // notify other scripts if they need to recalc layout
+      document.dispatchEvent(new CustomEvent('introHidden', { bubbles:true }));
+    }
+
+    if (intro){
+      document.body.classList.add('intro-active');
+      // Click anywhere in the center block or on the button
+      (btn || intro).addEventListener('click', function(){
+        intro.classList.add('hide');
+        setTimeout(reveal, 500);
+      }, { once:true });
+      // Escape key fallback
+      document.addEventListener('keydown', function(e){
+        if (e.key === 'Escape'){ reveal(); }
+      }, { once:true });
+    } else {
+      // If no intro, ensure content is visible
+      if (app){ app.classList.remove('hidden'); }
+      document.body.classList.remove('intro-active');
+    }
+  });
+})();
+
