@@ -560,37 +560,3 @@ document.addEventListener('applyAllergens', (e) => {
   });
 })();
 
-
-
-// Intro: only the logo acts as the enter button
-document.addEventListener('DOMContentLoaded', function(){
-  var intro = document.getElementById('intro-screen');
-  var app   = document.getElementById('app-content');
-  var btn   = document.getElementById('enter-btn');
-
-  function reveal(){
-    if (intro && intro.parentNode){ intro.parentNode.removeChild(intro); }
-    if (app){ app.classList.remove('hidden'); }
-    document.body.classList.remove('intro-active');
-    document.dispatchEvent(new CustomEvent('introHidden', { bubbles:true }));
-  }
-
-  if (intro){
-    document.body.classList.add('intro-active');
-    if (btn){
-      var handle = function(ev){
-        if (ev){ ev.preventDefault(); ev.stopPropagation(); }
-        intro.classList.add('hide');
-        setTimeout(reveal, 350);
-      };
-      btn.addEventListener('pointerdown', handle, { once:true, capture:true });
-      btn.addEventListener('click', handle, { once:true, capture:true });
-      btn.addEventListener('keydown', function(e){
-        if (e.key === 'Enter' || e.key === ' ') handle(e);
-      }, { once:true, capture:true });
-    }
-  } else {
-    if (app) app.classList.remove('hidden');
-  }
-});
-
