@@ -255,18 +255,21 @@ document.addEventListener('DOMContentLoaded', function(){
     if (intro && intro.parentNode) { try { intro.parentNode.removeChild(intro); } catch(e){} }
     if (appContent) appContent.classList.remove('hidden');
   }
-  if (intro && enterBtn){
-    enterBtn.addEventListener('click', function(){
+  if (intro){
+    var handler = function(){
       intro.classList.add('hide');
-      setTimeout(reveal, 600);
+      setTimeout(reveal, 500);
+    };
+    if (enterBtn) enterBtn.addEventListener('click', handler, { once:true });
+    // Fallback: click anywhere on the overlay
+    intro.addEventListener('click', function(e){
+      // ignore clicks that start outside the logo? no, accept whole overlay for reliability
+      handler();
     }, { once:true });
   } else {
     reveal();
   }
 });
-
-
-
 // Scoped scroll fade: header.nav, toolbar (filters), and bottom-sheet if present
 (function(){
   var topEls = [];
