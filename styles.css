@@ -641,32 +641,118 @@ header.nav.hide-on-scroll{
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
+\n
+/* === Safe-area header baseline + logo bottom alignment === */
+:root{ --safe-top: env(safe-area-inset-top, 0px); }
 
-
-/* Force header logo bottom aligned */
-
-.brand img {
-  margin-top: auto;
-  margin-bottom: 0;
-  align-self: flex-end;
-}
-
-
-/* === Dark mode: transparent but blurred header === */
-html[data-theme="dark"] .nav {
-  background: rgba(0,0,0,0.001) !important; /* visually transparent, enables blur on iOS */
-  backdrop-filter: blur(16px) saturate(120%);
+.nav{ position: sticky; top:0; z-index:2000; }
+.nav::before{
+  content:""; position:absolute; left:0; right:0;
+  top: calc(-1 * var(--safe-top)); height: calc(100% + var(--safe-top));
+  background: rgba(0,0,0,0.001);
   -webkit-backdrop-filter: blur(16px) saturate(120%);
+  backdrop-filter: blur(16px) saturate(120%);
   border-bottom: 1px solid rgba(255,255,255,0.08);
+  pointer-events:none;
+}
+.nav .nav-inner{
+  position:relative; padding-top: calc(var(--safe-top) + 6px);
+  min-height: 64px; display:flex; align-items:flex-end !important;
+}
+.nav .brand{ display:flex; align-items:flex-end; }
+.nav .brand img{ position:relative; top:8px; display:block; }
+
+/* === Back-to-top button === */
+.to-top{
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right) + 12px);
+  bottom: max(92px, env(safe-area-inset-bottom) + 92px);
+  width:44px; height:44px; border-radius:999px;
+  border:1px solid var(--border);
+  background: rgba(255,255,255,.9);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.22);
+  color: var(--text); font-size:18px; line-height:1;
+  display:none; align-items:center; justify-content:center;
+  z-index:1600; pointer-events:auto;
+}
+.to-top.show{ display:inline-flex; }
+html[data-theme="dark"] .to-top{
+  background: rgba(0,0,0,.55);
+  border-color: rgba(255,255,255,.12);
+  color:#eaeaea;
+}
+\n
+
+/* === Dark mode: high-contrast gold search === */
+html[data-theme="dark"] input[type="search"],
+html[data-theme="dark"] .search input,
+html[data-theme="dark"] .searchbar input {
+  background: rgba(0,0,0,0.2);
+  color: #f8f3d0;
+  border: 1px solid #d4af37;
+  border-radius: 12px;
+  padding: 10px 12px;
+  outline: none;
+  box-shadow: 0 0 0 0 transparent;
+}
+html[data-theme="dark"] input[type="search"]::placeholder,
+html[data-theme="dark"] .search input::placeholder,
+html[data-theme="dark"] .searchbar input::placeholder {
+  color: rgba(212,175,55,0.75);
+}
+html[data-theme="dark"] input[type="search"]:focus,
+html[data-theme="dark"] .search input:focus,
+html[data-theme="dark"] .searchbar input:focus {
+  border-color: #e1c563;
+  box-shadow: 0 0 0 3px rgba(212,175,55,0.25);
+}
+html[data-theme="dark"] .search .icon,
+html[data-theme="dark"] .searchbar .icon {
+  color: #d4af37;
 }
 
-/* === Bottom-align the header logo within the brand area === */
-.brand{
-  display:flex;
-  align-items:flex-end; /* anchor contents to bottom of header line */
+/* iOS autofill tint */
+input:-webkit-autofill {
+  -webkit-text-fill-color: #f8f3d0 !important;
+  -webkit-box-shadow: 0 0 0px 1000px rgba(0,0,0,0.2) inset !important;
+  caret-color: #f8f3d0;
 }
-.brand img{
-  position: relative;
-  top: 8px;             /* nudge downward; tweak 6–12px if needed */
+
+/* === Preset bar (quick allergen filters) === */
+.preset-bar{
+  position: sticky;
+  top: calc(64px + 8px);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: color-mix(in srgb, var(--bg) 6%, transparent);
+  z-index: 900;
+}
+.preset-btn{
+  appearance: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-weight: 700;
+  font-size: 14px;
+  background: rgba(255,255,255,0.6);
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.preset-btn:hover{ transform: translateY(-1px); }
+html[data-theme="dark"] .preset-bar{ background: rgba(0,0,0,0.35); }
+html[data-theme="dark"] .preset-btn{
+  background: rgba(0,0,0,0.45);
+  color: #f4e9c6;
+  border-color: rgba(212,175,55,0.6);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+}
+.preset-btn.active{
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212,175,55,0.25);
 }
 

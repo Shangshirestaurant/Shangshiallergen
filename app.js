@@ -1,4 +1,12 @@
-const state = { allergens: [], menu: [], selected: new Set(), mode: 'safe', q: '', ingQ: '', lang: 'en' };
+
+// Force dark mode on load
+document.addEventListener('DOMContentLoaded', function(){
+  var root = document.documentElement;
+  root.classList.add('dark');
+  root.setAttribute('data-theme','dark');
+  try{ localStorage.setItem('theme','dark'); }catch(e){}
+});
+\nconst state = { allergens: [], menu: [], selected: new Set(), mode: 'safe', q: '', ingQ: '', lang: 'en' };
 
 /* --- i18n --- */
 const I18N = {"en": {"hero_title": "Shang Shi FOH Allegern Selector", "hero_body": "Tick allergens, see safe dishes instantly.", "open_selector": "Open selector", "ingredients": "Ingredients", "select_allergens": "Select allergens", "mode_safe": "SAFE (exclude)", "mode_contains": "CONTAINS", "search_dishes": "Search dishes\u2026", "search_ingredients": "Search by ingredient\u2026", "search_dishes_or_ing": "Search dishes or ingredients\u2026", "disclaimer": "\u26a0\ufe0f Chef must verify codes before FOH use.", "no_matches": "No dishes match your filters.", "clear": "Clear", "back": "Back", "preset_glutenfree": "Gluten\u2011free", "preset_dairyfree": "Dairy\u2011free", "preset_nutfree": "Nut\u2011free"}, "et": {"hero_title": "Allergeenide kontroll kiireks teeninduseks", "hero_body": "M\u00e4rgi allergeenid ja n\u00e4e kohe sobivaid roogasid. M\u00f5eldud iPhone\u2019i/iPadi ja kiireks suhtluseks.", "open_selector": "Ava valik", "ingredients": "Koostisosad", "select_allergens": "Vali allergeenid", "mode_safe": "TURVALISED (v\u00e4lista)", "mode_contains": "SISALDAB", "search_dishes": "Otsi roogasid\u2026", "search_ingredients": "Otsi koostisosade j\u00e4rgi\u2026", "search_dishes_or_ing": "Otsi roogi v\u00f5i koostisosi\u2026", "disclaimer": "\u26a0\ufe0f Kokk peab koodid FOH jaoks kinnitama.", "no_matches": "Sinu filtritega roogasid ei leitud.", "clear": "T\u00fchjenda", "back": "Tagasi", "preset_glutenfree": "Gluteenivaba", "preset_dairyfree": "Laktoosivaba", "preset_nutfree": "P\u00e4hklivaba"}};
@@ -407,4 +415,111 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }catch(e){/* noop */}
 })();
+
+\n
+// Back-to-top behavior
+(function(){
+  function ready(fn){ if (document.readyState !== 'loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
+  ready(function(){
+    var btn = document.getElementById('backToTop');
+    if (!btn) return;
+    btn.style.pointerEvents = 'auto';
+    var ticking = false;
+    function onScroll(){
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function(){
+        var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+        if (y > 300) btn.classList.add('show'); else btn.classList.remove('show');
+        ticking = false;
+      });
+    }
+    window.addEventListener('scroll', onScroll, { passive:true });
+    onScroll();
+    btn.addEventListener('click', function(){
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top:0, behavior: reduced ? 'auto' : 'smooth' });
+    });
+  });
+})();
+\n
+
+// ----- Quick Preset Filters (Gluten-free, Nut-free, etc.) -----
+document.addEventListener('DOMContentLoaded', () => {
+  const bar = document.getElementById('presetBar');
+  if (!bar) return;
+
+  // Allergen keys (adjust to match your allergens.json keys)
+  const A = {
+    gluten: 'gluten',
+    peanuts: 'peanuts',
+    treenuts: 'tree_nuts',
+    dairy: 'dairy',
+    eggs: 'eggs',
+    fish: 'fish',
+    shellfish: 'shellfish',
+    soy: 'soy',
+    sesame: 'sesame',
+  };
+
+  const PRESETS = [
+    { id: 'gf',    label: 'Gluten-free',     exclude: [A.gluten] },
+    { id: 'nf',    label: 'Nut-free',        exclude: [A.peanuts, A.treenuts, A.sesame] },
+    { id: 'df',    label: 'Dairy-free',      exclude: [A.dairy] },
+    { id: 'ef',    label: 'Egg-free',        exclude: [A.eggs] },
+    { id: 'shell', label: 'Shellfish-free',  exclude: [A.shellfish] },
+    { id: 'soyf',  label: 'Soy-free',        exclude: [A.soy] },
+    { id: 'fishf', label:'Fish-free',        exclude: [A.fish] },
+  ];
+
+  // Render preset buttons
+  bar.innerHTML = PRESETS.map(p => 
+    `<button class="preset-btn" type="button" data-id="${p.id}">${p.label}</button>`
+  ).join('');
+
+  const btns = Array.from(bar.querySelectorAll('.preset-btn'));
+
+  function applyPreset(preset){
+    const excludeSet = new Set(preset.exclude);
+
+    // Integration path A: native globals
+    let integrated = false;
+    try {
+      if (window.selectedAllergens instanceof Set && typeof window.renderMenu === 'function') {
+        window.selectedAllergens.clear();
+        excludeSet.forEach(a => window.selectedAllergens.add(a));
+        window.renderMenu();
+        integrated = true;
+      }
+    } catch(e){}
+
+    // Integration path B: broadcast an event for your existing filter logic
+    if (!integrated){
+      document.dispatchEvent(new CustomEvent('applyAllergens', {
+        detail: { include: new Set(), exclude: excludeSet }
+      }));
+    }
+
+    // Visual state + persistence
+    btns.forEach(b => b.classList.toggle('active', b.dataset.id === preset.id));
+    try { localStorage.setItem('lastPreset', preset.id); } catch(e){}
+  }
+
+  // Wire click handlers
+  btns.forEach(b => b.addEventListener('click', () => {
+    const preset = PRESETS.find(p => p.id === b.dataset.id);
+    if (preset) applyPreset(preset);
+  }));
+
+  // Restore last preset on load
+  const last = (localStorage.getItem('lastPreset') || '').trim();
+  const start = PRESETS.find(p => p.id === last);
+  if (start) applyPreset(start);
+});
+
+// Example listener for apps that prefer event-based integration:
+document.addEventListener('applyAllergens', (e) => {
+  // If your code is checkbox-based, update your UI here and call render.
+  // This is a placeholder hook — keep if needed, or remove if you use Set+renderMenu path.
+});
 
